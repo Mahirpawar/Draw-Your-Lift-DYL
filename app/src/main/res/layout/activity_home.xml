@@ -1,23 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:text="Draw Your Lift (DYL)"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:text="Professional Lift Drawing App"
-        android:textSize="14sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:text="Draw Your Lift (DYL)"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
-</LinearLayout>
+        <TextView
+            android:text="Select Lift Configuration"
+            android:textSize="14sp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Door Type -->
+        <TextView
+            android:text="Door Type"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:id="@+id/btnAutoDoor"
+                android:text="Auto Door"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnManualDoor"
+                android:text="Manual Door"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+        <!-- Lift Type -->
+        <TextView
+            android:text="Lift Type"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnGearless"
+            android:text="Gearless Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/btnTraction"
+            android:text="Traction Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnCantilever"
+            android:text="Cantilever Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnHydraulic"
+            android:text="Hydraulic Lift"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"/>
+
+        <Button
+            android:id="@+id/btnNext"
+            android:text="Next"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"/>
+
+    </LinearLayout>
+</ScrollView>
