@@ -5,6 +5,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.dyl.drawyourlift.R;
+import android.content.Intent;
+import com.dyl.drawyourlift.ui.step1.Step1Activity;
+
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -41,21 +44,23 @@ public class HomeActivity extends AppCompatActivity {
 
         btnNext.setOnClickListener(v -> {
             if (doorType.isEmpty() || liftType.isEmpty()) {
-                Toast.makeText(this, "Please select Door Type and Lift Type", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, Step1Activity.class);
+                startActivity(intent);
+
                 return;
             }
 
             if (doorType.equals("MANUAL") &&
                     (liftType.equals("CANTILEVER") || liftType.equals("HYDRAULIC"))) {
-                Toast.makeText(this,
-                        "Selected lift type not allowed for Manual Door",
-                        Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, Step1Activity.class);
+                startActivity(intent);
+
                 return;
             }
 
-            Toast.makeText(this,
-                    "Proceeding to Step 1\n" + doorType + " - " + liftType,
-                    Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(this, Step1Activity.class);
+            startActivity(intent);
+
 
             // Step 1 Activity will be added on Day 3
         });

@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DrawYourLift">
         <activity
+            android:name=".ui.step1.Step1Activity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.HomeActivity"
             android:exported="true">
             <intent-filter>
