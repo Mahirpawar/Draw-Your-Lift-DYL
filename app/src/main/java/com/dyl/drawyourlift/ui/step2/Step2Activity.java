@@ -1,5 +1,6 @@
 package com.dyl.drawyourlift.ui.step2;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dyl.drawyourlift.R;
 import com.dyl.drawyourlift.data.repository.ProjectRepository;
+import com.dyl.drawyourlift.ui.step3.Step3Activity;
 
 public class Step2Activity extends AppCompatActivity {
 
@@ -86,6 +88,7 @@ public class Step2Activity extends AppCompatActivity {
 
         Toast.makeText(this, "Step 2 data saved", Toast.LENGTH_SHORT).show();
 
-        // Step 3 navigation on Day 6
+        startActivity(new Intent(this, Step3Activity.class));
+
     }
 }

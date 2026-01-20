@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:text="Step 3 – Machine and Counterweight"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spRoping"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spMachineBrand"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spMachineModel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spCounterSide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spCounterDbg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Spinner android:id="@+id/spCounterPulley"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
+
+            <Button
+                android:id="@+id/btnPreviousStep3"
+                android:text="Previous"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnNextStep3"
+                android:text="Next"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
