@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.dyl.drawyourlift.R;
 import android.content.Intent;
 import com.dyl.drawyourlift.ui.step1.Step1Activity;
+import com.dyl.drawyourlift.data.repository.ProjectRepository;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -57,8 +58,12 @@ public class HomeActivity extends AppCompatActivity {
 
                 return;
             }
+            ProjectRepository repo = ProjectRepository.getInstance();
+            repo.getProject().doorType = doorType;
+            repo.getProject().liftType = liftType;
 
             Intent intent = new Intent(this, Step1Activity.class);
+
             startActivity(intent);
 
 

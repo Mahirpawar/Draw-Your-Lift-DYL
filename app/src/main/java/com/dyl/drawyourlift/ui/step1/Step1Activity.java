@@ -1,5 +1,6 @@
 package com.dyl.drawyourlift.ui.step1;
 
+import com.dyl.drawyourlift.data.repository.ProjectRepository;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -48,17 +49,36 @@ public class Step1Activity extends AppCompatActivity {
     }
 
     private void validateAndProceed() {
-        String projectName = etProjectName.getText().toString().trim();
 
+        String projectName = etProjectName.getText().toString().trim();
         if (projectName.isEmpty()) {
             Toast.makeText(this, "Project Name is required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        Toast.makeText(this,
-                "Step 1 completed successfully",
-                Toast.LENGTH_SHORT).show();
+        ProjectRepository repo = ProjectRepository.getInstance();
 
-        // Step 2 will be linked on Day 4
+        repo.getProject().userName = etUserName.getText().toString().trim();
+        repo.getProject().projectName = projectName;
+        repo.getProject().passengerCapacity =
+                Integer.parseInt(spCapacity.getSelectedItem().toString());
+        repo.getProject().numberOfFloors =
+                Integer.parseInt(spFloors.getSelectedItem().toString());
+
+        repo.getProject().shaftWidth =
+                Integer.parseInt(etShaftWidth.getText().toString());
+        repo.getProject().shaftDepth =
+                Integer.parseInt(etShaftDepth.getText().toString());
+        repo.getProject().floorHeight =
+                Integer.parseInt(etFloorHeight.getText().toString());
+        repo.getProject().pitDepth =
+                Integer.parseInt(etPitDepth.getText().toString());
+        repo.getProject().overheadHeight =
+                Integer.parseInt(etOverheadHeight.getText().toString());
+
+        Toast.makeText(this, "Step 1 data saved", Toast.LENGTH_SHORT).show();
+
+        // Step 2 navigation will be added Day 5
     }
+
 }
