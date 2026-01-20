@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DrawYourLift">
         <activity
+            android:name=".ui.step2.Step2Activity"
+            android:exported="false" />
+        <activity
             android:name=".data.model.LiftProject"
             android:exported="false" />
         <activity

@@ -9,6 +9,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.dyl.drawyourlift.R;
+import android.content.Intent;
+import com.dyl.drawyourlift.ui.step2.Step2Activity;
+
 
 public class Step1Activity extends AppCompatActivity {
 
@@ -78,7 +81,8 @@ public class Step1Activity extends AppCompatActivity {
 
         Toast.makeText(this, "Step 1 data saved", Toast.LENGTH_SHORT).show();
 
-        // Step 2 navigation will be added Day 5
+        startActivity(new Intent(this, Step2Activity.class));
+
     }
 
 }
