@@ -1,5 +1,7 @@
 package com.dyl.drawyourlift.ui.step3;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -11,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.dyl.drawyourlift.R;
 import com.dyl.drawyourlift.data.repository.ProjectRepository;
+import com.dyl.drawyourlift.ui.step4.Step4Activity;
 
 
 import java.util.HashMap;
@@ -119,6 +122,8 @@ public class Step3Activity extends AppCompatActivity {
                 Integer.parseInt(spCounterPulley.getSelectedItem().toString());
 
         Toast.makeText(this, "Step 3 data saved", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, Step4Activity.class));
+
 
 
     }
