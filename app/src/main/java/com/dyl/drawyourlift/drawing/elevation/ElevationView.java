@@ -12,6 +12,9 @@ import com.dyl.drawyourlift.data.repository.ProjectRepository;
 public class ElevationView extends View {
 
     private Paint shaftPaint, floorPaint, textPaint, cabinPaint;
+    private Paint railPaint;
+    private Paint counterPaint;
+
 
     // scale: 1 mm = 0.2 px (adjust later)
     private static final float SCALE = 0.2f;
@@ -39,6 +42,14 @@ public class ElevationView extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(28);
         textPaint.setAntiAlias(true);
+        railPaint = new Paint();
+        railPaint.setColor(Color.GRAY);
+        railPaint.setStrokeWidth(4);
+
+        counterPaint = new Paint();
+        counterPaint.setColor(Color.DKGRAY);
+        counterPaint.setStyle(Paint.Style.FILL);
+
     }
 
     @Override
@@ -67,6 +78,25 @@ public class ElevationView extends View {
                 startY + totalHeightPx,
                 shaftPaint
         );
+        // Cabin guide rails
+        int railOffset = mmToPx(100);
+
+        canvas.drawLine(
+                startX + railOffset,
+                startY,
+                startX + railOffset,
+                startY + totalHeightPx,
+                railPaint
+        );
+
+        canvas.drawLine(
+                startX + shaftWidthPx - railOffset,
+                startY,
+                startX + shaftWidthPx - railOffset,
+                startY + totalHeightPx,
+                railPaint
+        );
+
 
         int currentY = startY + overheadPx;
 
@@ -94,18 +124,89 @@ public class ElevationView extends View {
             currentY += floorHeightPx;
         }
 
-        // Cabin (simple rectangle for now)
+        // ================= CABIN GEOMETRY =================
         int cabinWidthPx = (int) (shaftWidthPx * 0.7);
+        int cabinHeightPx = floorHeightPx;
+
         int cabinX = startX + (shaftWidthPx - cabinWidthPx) / 2;
         int cabinY = startY + overheadPx + travelPx - floorHeightPx;
 
+// ================= CABIN BODY =================
         canvas.drawRect(
                 cabinX,
                 cabinY,
                 cabinX + cabinWidthPx,
-                cabinY + floorHeightPx,
+                cabinY + cabinHeightPx,
                 cabinPaint
         );
+
+// ================= DOOR OPENING =================
+        int doorWidthPx = mmToPx(p.clearOpening);
+        int doorX = cabinX + (cabinWidthPx - doorWidthPx) / 2;
+        int doorY = cabinY + mmToPx(200);
+
+        Paint doorPaint = new Paint();
+        doorPaint.setColor(Color.WHITE);
+        doorPaint.setStyle(Paint.Style.FILL);
+
+        canvas.drawRect(
+                doorX,
+                doorY,
+                doorX + doorWidthPx,
+                cabinY + cabinHeightPx,
+                doorPaint
+        );
+
+// outline
+        canvas.drawRect(
+                doorX,
+                doorY,
+                doorX + doorWidthPx,
+                cabinY + cabinHeightPx,
+                shaftPaint
+        );
+
+
+
+        // Counterweight dimensions
+        int counterWidth = mmToPx(p.counterDbgSize);
+        int counterHeight = mmToPx(1200); // typical counter block height
+
+        int counterX;
+        if (p.counterFrameSide.equalsIgnoreCase("Left")) {
+            counterX = startX + railOffset;
+        } else if (p.counterFrameSide.equalsIgnoreCase("Right")) {
+            counterX = startX + shaftWidthPx - railOffset - counterWidth;
+        } else { // Back
+            counterX = startX + (shaftWidthPx - counterWidth) / 2;
+        }
+
+        int counterY = startY + overheadPx + mmToPx(500);
+
+        canvas.drawRect(
+                counterX,
+                counterY,
+                counterX + counterWidth,
+                counterY + counterHeight,
+                counterPaint
+        );
+        // Counterweight guide rails
+        canvas.drawLine(
+                counterX,
+                startY,
+                counterX,
+                startY + totalHeightPx,
+                railPaint
+        );
+
+        canvas.drawLine(
+                counterX + counterWidth,
+                startY,
+                counterX + counterWidth,
+                startY + totalHeightPx,
+                railPaint
+        );
+
     }
 
     private int mmToPx(int mm) {
