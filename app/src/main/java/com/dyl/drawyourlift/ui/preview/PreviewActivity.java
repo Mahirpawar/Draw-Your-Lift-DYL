@@ -1,11 +1,13 @@
 package com.dyl.drawyourlift.ui.preview;
 
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dyl.drawyourlift.drawing.elevation.ElevationView;
+import com.dyl.drawyourlift.drawing.front.FrontView;
 
 public class PreviewActivity extends AppCompatActivity {
 
@@ -13,14 +15,15 @@ public class PreviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Create drawing view
-        ElevationView elevationView = new ElevationView(this);
+        LinearLayout container = new LinearLayout(this);
+        container.setOrientation(LinearLayout.VERTICAL);
 
-        // Wrap it in ScrollView
+        container.addView(new ElevationView(this));
+        container.addView(new FrontView(this));
+
         ScrollView scrollView = new ScrollView(this);
-        scrollView.addView(elevationView);
+        scrollView.addView(container);
 
-        // Set ONLY ONCE
         setContentView(scrollView);
     }
 }
