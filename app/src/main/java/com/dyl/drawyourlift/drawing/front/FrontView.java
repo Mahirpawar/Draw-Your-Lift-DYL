@@ -14,6 +14,9 @@ public class FrontView extends View {
     private Paint shaftPaint, cabinPaint, doorPaint, textPaint;
 
     private static final float SCALE = 0.2f;
+    private Paint dimPaint;
+    private Paint dimTextPaint;
+
 
     public FrontView(Context context) {
         super(context);
@@ -39,6 +42,16 @@ public class FrontView extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(26);
         textPaint.setAntiAlias(true);
+
+        dimPaint = new Paint();
+        dimPaint.setColor(Color.BLACK);
+        dimPaint.setStrokeWidth(3);
+
+        dimTextPaint = new Paint();
+        dimTextPaint.setColor(Color.BLACK);
+        dimTextPaint.setTextSize(24);
+        dimTextPaint.setAntiAlias(true);
+
     }
 
     @Override
@@ -64,6 +77,16 @@ public class FrontView extends View {
                 startY + viewHeight,
                 shaftPaint
         );
+        // Shaft width dimension
+        drawHorizontalDimension(
+                canvas,
+                startX,
+                startX + shaftWidthPx,
+                startY + viewHeight + 80,
+                "Shaft Width: " + p.shaftWidth + " mm"
+        );
+
+
 
         // Cabin
         int cabinX = startX + (shaftWidthPx - cabinWidthPx) / 2;
@@ -75,6 +98,7 @@ public class FrontView extends View {
                 startY + viewHeight,
                 cabinPaint
         );
+
 
         // Door position logic
         int doorX;
@@ -105,6 +129,13 @@ public class FrontView extends View {
                 startY + viewHeight,
                 shaftPaint
         );
+        drawHorizontalDimension(
+                canvas,
+                doorX,
+                doorX + doorWidthPx,
+                startY + viewHeight + 130,
+                "Clear Opening: " + p.clearOpening + " mm"
+        );
 
         // Label
         canvas.drawText(
@@ -113,6 +144,7 @@ public class FrontView extends View {
                 startY + viewHeight + 40,
                 textPaint
         );
+
     }
 
     private int mmToPx(int mm) {
@@ -129,4 +161,29 @@ public class FrontView extends View {
 
         setMeasuredDimension(desiredWidth, desiredHeight);
     }
+
+    private void drawHorizontalDimension(
+            Canvas canvas,
+            int x1, int x2,
+            int y,
+            String text
+    ) {
+        // Extension lines
+        canvas.drawLine(x1, y - 20, x1, y + 20, dimPaint);
+        canvas.drawLine(x2, y - 20, x2, y + 20, dimPaint);
+
+        // Dimension line
+        canvas.drawLine(x1, y, x2, y, dimPaint);
+
+        // Arrowheads
+        canvas.drawLine(x1, y, x1 + 10, y - 10, dimPaint);
+        canvas.drawLine(x1, y, x1 + 10, y + 10, dimPaint);
+
+        canvas.drawLine(x2, y, x2 - 10, y - 10, dimPaint);
+        canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
+
+        // Text
+        canvas.drawText(text, (x1 + x2) / 2 - 40, y - 10, dimTextPaint);
+    }
+
 }

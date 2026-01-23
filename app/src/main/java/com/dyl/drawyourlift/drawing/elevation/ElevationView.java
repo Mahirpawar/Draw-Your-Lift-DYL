@@ -14,6 +14,9 @@ public class ElevationView extends View {
     private Paint shaftPaint, floorPaint, textPaint, cabinPaint;
     private Paint railPaint;
     private Paint counterPaint;
+    private Paint dimPaint;
+    private Paint dimTextPaint;
+
 
 
     // scale: 1 mm = 0.2 px (adjust later)
@@ -49,6 +52,16 @@ public class ElevationView extends View {
         counterPaint = new Paint();
         counterPaint.setColor(Color.DKGRAY);
         counterPaint.setStyle(Paint.Style.FILL);
+
+        dimPaint = new Paint();
+        dimPaint.setColor(Color.BLACK);
+        dimPaint.setStrokeWidth(3);
+
+        dimTextPaint = new Paint();
+        dimTextPaint.setColor(Color.BLACK);
+        dimTextPaint.setTextSize(24);
+        dimTextPaint.setAntiAlias(true);
+
 
     }
 
@@ -123,6 +136,13 @@ public class ElevationView extends View {
 
             currentY += floorHeightPx;
         }
+        canvas.drawText(
+                "Floor Height: " + p.floorHeight + " mm",
+                startX + shaftWidthPx + 40,
+                startY + overheadPx + floorHeightPx,
+                dimTextPaint
+        );
+
 
         // ================= CABIN GEOMETRY =================
         int cabinWidthPx = (int) (shaftWidthPx * 0.7);
@@ -206,6 +226,24 @@ public class ElevationView extends View {
                 startY + totalHeightPx,
                 railPaint
         );
+        // ===== SHAFT WIDTH DIMENSION =====
+        drawHorizontalDimension(
+                canvas,
+                startX,
+                startX + shaftWidthPx,
+                startY + totalHeightPx + 80,
+                "Shaft Width: " + p.shaftWidth + " mm"
+        );
+        // ===== CLEAR OPENING DIMENSION =====
+        drawHorizontalDimension(
+                canvas,
+                doorX,
+                doorX + doorWidthPx,
+                cabinY - 40,
+                "Clear Opening: " + p.clearOpening + " mm"
+        );
+
+
 
     }
 
@@ -230,4 +268,31 @@ public class ElevationView extends View {
 
         setMeasuredDimension(desiredWidth, desiredHeight);
     }
+
+    private void drawHorizontalDimension(
+            Canvas canvas,
+            int x1, int x2,
+            int y,
+            String text
+    ) {
+        // Extension lines
+        canvas.drawLine(x1, y - 20, x1, y + 20, dimPaint);
+        canvas.drawLine(x2, y - 20, x2, y + 20, dimPaint);
+
+        // Dimension line
+        canvas.drawLine(x1, y, x2, y, dimPaint);
+
+        // Arrowheads
+        canvas.drawLine(x1, y, x1 + 10, y - 10, dimPaint);
+        canvas.drawLine(x1, y, x1 + 10, y + 10, dimPaint);
+
+        canvas.drawLine(x2, y, x2 - 10, y - 10, dimPaint);
+        canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
+
+        // Text
+        canvas.drawText(text, (x1 + x2) / 2 - 40, y - 10, dimTextPaint);
+    }
+
+
 }
+
