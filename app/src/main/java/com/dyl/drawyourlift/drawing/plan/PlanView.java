@@ -1,0 +1,150 @@
+package com.dyl.drawyourlift.drawing.plan;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.view.View;
+
+import com.dyl.drawyourlift.data.model.LiftProject;
+import com.dyl.drawyourlift.data.repository.ProjectRepository;
+
+public class PlanView extends View {
+
+    private Paint shaftPaint, cabinPaint, counterPaint, doorPaint, textPaint;
+    private static final float SCALE = 0.2f;
+
+    public PlanView(Context context) {
+        super(context);
+        init();
+    }
+
+    private void init() {
+
+        shaftPaint = new Paint();
+        shaftPaint.setColor(Color.BLACK);
+        shaftPaint.setStyle(Paint.Style.STROKE);
+        shaftPaint.setStrokeWidth(4);
+
+        cabinPaint = new Paint();
+        cabinPaint.setColor(Color.LTGRAY);
+        cabinPaint.setStyle(Paint.Style.FILL);
+
+        counterPaint = new Paint();
+        counterPaint.setColor(Color.DKGRAY);
+        counterPaint.setStyle(Paint.Style.FILL);
+
+        doorPaint = new Paint();
+        doorPaint.setColor(Color.WHITE);
+        doorPaint.setStyle(Paint.Style.FILL);
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.BLACK);
+        textPaint.setTextSize(26);
+        textPaint.setAntiAlias(true);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        LiftProject p = ProjectRepository.getInstance().getProject();
+
+        int shaftWidthPx = mmToPx(p.shaftWidth);
+        int shaftDepthPx = mmToPx(p.shaftDepth);
+
+        int cabinWidthPx = (int) (shaftWidthPx * 0.7);
+        int cabinDepthPx = (int) (shaftDepthPx * 0.7);
+
+        int startX = 100;
+        int startY = 50;
+
+        // Shaft outline
+        canvas.drawRect(
+                startX,
+                startY,
+                startX + shaftWidthPx,
+                startY + shaftDepthPx,
+                shaftPaint
+        );
+
+        // Cabin footprint
+        int cabinX = startX + (shaftWidthPx - cabinWidthPx) / 2;
+        int cabinY = startY + (shaftDepthPx - cabinDepthPx) / 2;
+
+        canvas.drawRect(
+                cabinX,
+                cabinY,
+                cabinX + cabinWidthPx,
+                cabinY + cabinDepthPx,
+                cabinPaint
+        );
+
+        // Counterweight footprint
+        int counterSize = mmToPx(p.counterDbgSize);
+
+        int counterX, counterY;
+        if (p.counterFrameSide.equalsIgnoreCase("Left")) {
+            counterX = startX;
+            counterY = cabinY;
+        } else if (p.counterFrameSide.equalsIgnoreCase("Right")) {
+            counterX = startX + shaftWidthPx - counterSize;
+            counterY = cabinY;
+        } else { // Back
+            counterX = cabinX;
+            counterY = startY;
+        }
+
+        canvas.drawRect(
+                counterX,
+                counterY,
+                counterX + counterSize,
+                counterY + counterSize,
+                counterPaint
+        );
+
+        // Door opening (front side)
+        int doorWidthPx = mmToPx(p.clearOpening);
+        int doorX = cabinX + (cabinWidthPx - doorWidthPx) / 2;
+        int doorY = startY + shaftDepthPx - mmToPx(80);
+
+        canvas.drawRect(
+                doorX,
+                doorY,
+                doorX + doorWidthPx,
+                startY + shaftDepthPx,
+                doorPaint
+        );
+
+        canvas.drawRect(
+                doorX,
+                doorY,
+                doorX + doorWidthPx,
+                startY + shaftDepthPx,
+                shaftPaint
+        );
+
+        // Label
+        canvas.drawText(
+                "PLAN VIEW",
+                startX,
+                startY + shaftDepthPx + 40,
+                textPaint
+        );
+    }
+
+    private int mmToPx(int mm) {
+        return (int) (mm * SCALE);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        LiftProject p = ProjectRepository.getInstance().getProject();
+
+        int desiredWidth = mmToPx(p.shaftWidth) + 200;
+        int desiredHeight = mmToPx(p.shaftDepth) + 200;
+
+        setMeasuredDimension(desiredWidth, desiredHeight);
+    }
+}
