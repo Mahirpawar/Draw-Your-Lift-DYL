@@ -19,57 +19,23 @@ public class PdfGenerator {
 
         PdfDocument pdfDocument = new PdfDocument();
 
-        // -------- PAGE 1: ELEVATION --------
-        ElevationView elevationView = new ElevationView(context);
-        elevationView.measure(
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        );
+        // Page 1: Elevation
+        createPage(pdfDocument, new ElevationView(context), 1);
 
-        PdfDocument.Page elevationPage = pdfDocument.startPage(
-                new PdfDocument.PageInfo.Builder(
-                        elevationView.getMeasuredWidth(),
-                        elevationView.getMeasuredHeight(),
-                        1
-                ).create()
-        );
+        // Page 2: Front View
+        createPage(pdfDocument, new FrontView(context), 2);
 
-        Canvas elevationCanvas = elevationPage.getCanvas();
-        elevationView.draw(elevationCanvas);
-        pdfDocument.finishPage(elevationPage);
+        // Page 3: Plan View
+        createPage(pdfDocument, new PlanView(context), 3);
 
-        // -------- PAGE 2: FRONT VIEW --------
-        FrontView frontView = new FrontView(context);
-        PdfDocument.Page frontPage = pdfDocument.startPage(
-                new PdfDocument.PageInfo.Builder(
-                        frontView.getMeasuredWidth(),
-                        frontView.getMeasuredHeight(),
-                        2
-                ).create()
-        );
-
-        Canvas frontCanvas = frontPage.getCanvas();
-        frontView.draw(frontCanvas);
-        pdfDocument.finishPage(frontPage);
-
-        // -------- PAGE 3: PLAN VIEW --------
-        PlanView planView = new PlanView(context);
-        PdfDocument.Page planPage = pdfDocument.startPage(
-                new PdfDocument.PageInfo.Builder(
-                        planView.getMeasuredWidth(),
-                        planView.getMeasuredHeight(),
-                        3
-                ).create()
-        );
-
-        Canvas planCanvas = planPage.getCanvas();
-        planView.draw(planCanvas);
-        pdfDocument.finishPage(planPage);
-
-        // -------- SAVE FILE --------
+        // Save file
         File downloadsDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS
         );
+
+        if (!downloadsDir.exists()) {
+            downloadsDir.mkdirs();
+        }
 
         File file = new File(
                 downloadsDir,
@@ -83,5 +49,40 @@ public class PdfGenerator {
         fos.close();
 
         return file;
+    }
+
+    // 🔹 CORE METHOD — DO NOT MODIFY
+    private static void createPage(
+            PdfDocument pdfDocument,
+            View view,
+            int pageNumber
+    ) {
+
+        // FORCE MEASURE
+        view.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        );
+
+        // FORCE LAYOUT
+        view.layout(
+                0,
+                0,
+                view.getMeasuredWidth(),
+                view.getMeasuredHeight()
+        );
+
+        PdfDocument.Page page = pdfDocument.startPage(
+                new PdfDocument.PageInfo.Builder(
+                        view.getMeasuredWidth(),
+                        view.getMeasuredHeight(),
+                        pageNumber
+                ).create()
+        );
+
+        Canvas canvas = page.getCanvas();
+        view.draw(canvas);
+
+        pdfDocument.finishPage(page);
     }
 }
