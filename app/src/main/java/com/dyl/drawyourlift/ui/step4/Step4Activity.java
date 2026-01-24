@@ -29,6 +29,7 @@ public class Step4Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step4);
 
+
         etLeftWall = findViewById(R.id.etLeftWall);
         etMainBracket = findViewById(R.id.etMainBracket);
         etCounterBracket = findViewById(R.id.etCounterBracket);
