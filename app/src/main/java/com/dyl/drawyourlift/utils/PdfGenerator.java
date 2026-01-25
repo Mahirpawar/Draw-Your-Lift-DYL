@@ -114,7 +114,7 @@ public class PdfGenerator {
                 elevationView.getMeasuredHeight()
                         + frontView.getMeasuredHeight()
                         + planView.getMeasuredHeight()
-                        + 300; // header + spacing
+                        + 400; // header + spacing
 
         PdfDocument.Page page = pdfDocument.startPage(
                 new PdfDocument.PageInfo.Builder(pageWidth, pageHeight, 1).create()
@@ -133,7 +133,7 @@ public class PdfGenerator {
         elevationView.draw(canvas);
         canvas.translate(-40, -currentY);
 
-        currentY += elevationView.getMeasuredHeight() + 80;
+        currentY += elevationView.getMeasuredHeight() + 130;
 
 
         // Front View
@@ -144,7 +144,7 @@ public class PdfGenerator {
         frontView.draw(canvas);
         canvas.translate(-40, -currentY);
 
-        currentY += frontView.getMeasuredHeight() + 80;
+        currentY += frontView.getMeasuredHeight() + 120;
 
         // Plan View
         drawSectionTitle(canvas, "Plan View", currentY);

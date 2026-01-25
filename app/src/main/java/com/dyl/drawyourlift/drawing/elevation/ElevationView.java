@@ -309,8 +309,14 @@ public class ElevationView extends View {
         canvas.drawLine(x2, y, x2 - 10, y - 10, dimPaint);
         canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
 
-        // Text
-        canvas.drawText(text, (x1 + x2) / 2 - 40, y - 10, dimTextPaint);
+        // Text (move higher to avoid overlap)
+        canvas.drawText(
+                text,
+                (x1 + x2) / 2f - dimTextPaint.measureText(text) / 2f,
+                y - 30,
+                dimTextPaint
+        );
+
     }
     private void drawVerticalDimension(
             Canvas canvas,

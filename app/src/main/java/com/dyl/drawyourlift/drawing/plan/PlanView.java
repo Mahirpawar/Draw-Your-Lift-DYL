@@ -174,7 +174,7 @@ public class PlanView extends View {
         LiftProject p = ProjectRepository.getInstance().getProject();
 
         int desiredWidth = mmToPx(p.shaftWidth) + 300;
-        int desiredHeight = mmToPx(p.shaftDepth) + 200;
+        int desiredHeight = mmToPx(p.shaftDepth) + 350;
 
         setMeasuredDimension(desiredWidth, desiredHeight);
     }
@@ -200,7 +200,7 @@ public class PlanView extends View {
         canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
 
         // Text
-        canvas.drawText(text, (x1 + x2)/2 - 40, y - 10, dimTextPaint);
+        canvas.drawText(text, (x1 + x2)/2 - 120, y + 40, dimTextPaint);
     }
     private void drawVerticalDimension(
             Canvas canvas,
@@ -221,7 +221,7 @@ public class PlanView extends View {
 
         canvas.save();
         canvas.rotate(-90, x + 20, (y1 + y2) / 2);
-        canvas.drawText(text, x + 20, (y1 + y2) / 2, dimTextPaint);
+        canvas.drawText(text, x - 60, (y1 + y2) / 2 + 25 , dimTextPaint);
         canvas.restore();
     }
 
