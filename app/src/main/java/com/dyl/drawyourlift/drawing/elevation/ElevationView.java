@@ -136,11 +136,12 @@ public class ElevationView extends View {
 
             currentY += floorHeightPx;
         }
-        canvas.drawText(
-                "Floor Height: " + p.floorHeight + " mm",
-                startX + shaftWidthPx + 40,
+        drawVerticalDimension(
+                canvas,
+                startY + overheadPx,
                 startY + overheadPx + floorHeightPx,
-                dimTextPaint
+                startX + shaftWidthPx + 60,
+                "Floor Height: " + p.floorHeight + " mm"
         );
 
 
@@ -226,6 +227,25 @@ public class ElevationView extends View {
                 startY + totalHeightPx,
                 railPaint
         );
+
+        //pit depth
+        drawVerticalDimension(
+                canvas,
+                startY + totalHeightPx - pitPx,
+                startY + totalHeightPx,
+                startX - 80,
+                "Pit: " + p.pitDepth + " mm"
+        );
+        //over head
+        drawVerticalDimension(
+                canvas,
+                startY,
+                startY + overheadPx,
+                startX - 80,
+                "Overhead: " + p.overheadHeight + " mm"
+        );
+
+
         // ===== SHAFT WIDTH DIMENSION =====
         drawHorizontalDimension(
                 canvas,
@@ -292,6 +312,33 @@ public class ElevationView extends View {
         // Text
         canvas.drawText(text, (x1 + x2) / 2 - 40, y - 10, dimTextPaint);
     }
+    private void drawVerticalDimension(
+            Canvas canvas,
+            int y1, int y2,
+            int x,
+            String text
+    ) {
+        // Extension lines
+        canvas.drawLine(x - 20, y1, x + 20, y1, dimPaint);
+        canvas.drawLine(x - 20, y2, x + 20, y2, dimPaint);
+
+        // Dimension line
+        canvas.drawLine(x, y1, x, y2, dimPaint);
+
+        // Arrowheads
+        canvas.drawLine(x, y1, x - 10, y1 + 10, dimPaint);
+        canvas.drawLine(x, y1, x + 10, y1 + 10, dimPaint);
+
+        canvas.drawLine(x, y2, x - 10, y2 - 10, dimPaint);
+        canvas.drawLine(x, y2, x + 10, y2 - 10, dimPaint);
+
+        // Rotate text for vertical reading
+        canvas.save();
+        canvas.rotate(-90, x - 25, (y1 + y2) / 2f);
+        canvas.drawText(text, x - 25, (y1 + y2) / 2f, dimTextPaint);
+        canvas.restore();
+    }
+
 
 
 }

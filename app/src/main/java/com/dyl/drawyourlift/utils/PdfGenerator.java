@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.pdf.PdfDocument;
 import android.os.Environment;
 import android.view.View;
-
+import android.graphics.Paint;
 import com.dyl.drawyourlift.drawing.elevation.ElevationView;
 import com.dyl.drawyourlift.drawing.front.FrontView;
 import com.dyl.drawyourlift.drawing.plan.PlanView;
@@ -96,6 +96,7 @@ public class PdfGenerator {
 
         // Prepare views
         ElevationView elevationView = new ElevationView(context);
+
         FrontView frontView = new FrontView(context);
         PlanView planView = new PlanView(context);
 
@@ -125,25 +126,37 @@ public class PdfGenerator {
         int currentY = drawHeader(canvas, projectName, liftType);
 
         // Elevation
+        drawSectionTitle(canvas, "ELEVATION", currentY);
+        currentY += 40;
+
         canvas.translate(40, currentY);
         elevationView.draw(canvas);
         canvas.translate(-40, -currentY);
 
-        currentY += elevationView.getMeasuredHeight() + 40;
+        currentY += elevationView.getMeasuredHeight() + 80;
+
 
         // Front View
+        drawSectionTitle(canvas, "Front View", currentY);
+        currentY += 40;
+
         canvas.translate(40, currentY);
         frontView.draw(canvas);
         canvas.translate(-40, -currentY);
 
-        currentY += frontView.getMeasuredHeight() + 40;
+        currentY += frontView.getMeasuredHeight() + 80;
 
         // Plan View
+        drawSectionTitle(canvas, "Plan View", currentY);
+        currentY += 40;
+
         canvas.translate(40, currentY);
         planView.draw(canvas);
         canvas.translate(-40, -currentY);
 
         pdfDocument.finishPage(page);
+        pageHeight += 40;
+
 
 
 
@@ -172,6 +185,16 @@ public class PdfGenerator {
         );
         view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
     }
+    ///to maintain gap between each drawing
+    private static void drawSectionTitle(Canvas canvas, String title, int y) {
+        Paint paint = new Paint();
+        paint.setTextSize(28);
+        paint.setFakeBoldText(true);
+
+        canvas.drawText(title, 40, y, paint);
+        canvas.drawLine(40, y + 10, canvas.getWidth() - 40, y + 10, paint);
+    }
+
 
 
 
