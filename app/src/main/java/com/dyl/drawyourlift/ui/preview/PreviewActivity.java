@@ -32,6 +32,24 @@ public class PreviewActivity extends AppCompatActivity {
 
         Button generatePdfBtn = new Button(this);
         generatePdfBtn.setText("Generate PDF");
+        Button singlePdfBtn = new Button(this);
+        singlePdfBtn.setText("Generate Single Page PDF");
+        container.addView(singlePdfBtn);
+
+        singlePdfBtn.setOnClickListener(v -> {
+            try {
+                File pdf = PdfGenerator.generateSinglePagePdf(
+                        this,
+                        ProjectRepository.getInstance().getProject().projectName,
+                        "Auto Door – Gearless"
+                );
+                Toast.makeText(this, "Single page PDF saved", Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Single page PDF failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         generatePdfBtn.setOnClickListener(v -> {
             try {
