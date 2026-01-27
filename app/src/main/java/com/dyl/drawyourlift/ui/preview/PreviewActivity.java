@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.dyl.drawyourlift.data.model.LiftProject;
 import com.dyl.drawyourlift.data.repository.ProjectRepository;
 import com.dyl.drawyourlift.drawing.elevation.ElevationView;
 import com.dyl.drawyourlift.drawing.front.FrontView;
@@ -69,12 +70,16 @@ public class PreviewActivity extends AppCompatActivity {
         });
 
         // ===== BUTTON ACTIONS =====
+        LiftProject project = ProjectRepository.getInstance().getProject();
+
         singlePdfBtn.setOnClickListener(v -> {
             try {
+                String liftTypeLabel = getLiftTypeLabel();
+
                 File pdf = PdfGenerator.generateSinglePagePdf(
                         this,
                         ProjectRepository.getInstance().getProject().projectName,
-                        "Auto Door – Gearless"
+                        liftTypeLabel
                 );
                 Toast.makeText(this, "Single page PDF saved", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -85,9 +90,11 @@ public class PreviewActivity extends AppCompatActivity {
 
         multiPdfBtn.setOnClickListener(v -> {
             try {
+
                 File pdf = PdfGenerator.generateMultiPagePdf(
                         this,
                         ProjectRepository.getInstance().getProject().projectName
+
                 );
                 Toast.makeText(this, "Multi page PDF saved", Toast.LENGTH_LONG).show();
             } catch (Exception e) {
@@ -106,4 +113,32 @@ public class PreviewActivity extends AppCompatActivity {
 
         setContentView(root);
     }
+    private String getLiftTypeLabel() {
+        LiftProject p = ProjectRepository.getInstance().getProject();
+
+        String door =
+                p.doorType.equals("AUTO") ? "Auto Door" : "Manual Door";
+
+        String lift;
+
+        switch (p.liftType) {
+            case "GEARLESS":
+                lift = "Gearless";
+                break;
+            case "TRACTION":
+                lift = "Traction";
+                break;
+            case "CANTILEVER":
+                lift = "Cantilever";
+                break;
+            case "HYDRAULIC":
+                lift = "Hydraulic";
+                break;
+            default:
+                lift = "Unknown";
+        }
+
+        return door + " – " + lift;
+    }
+
 }

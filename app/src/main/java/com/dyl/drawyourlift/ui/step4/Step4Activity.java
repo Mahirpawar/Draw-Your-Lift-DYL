@@ -7,12 +7,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.dyl.drawyourlift.R;
 import com.dyl.drawyourlift.data.repository.ProjectRepository;
-import android.content.Intent;
 import com.dyl.drawyourlift.ui.preview.PreviewActivity;
 
 
@@ -22,7 +19,7 @@ public class Step4Activity extends AppCompatActivity {
     EditText etLeftWall, etMainBracket, etCounterBracket,
             etCabinWallGap, etCabinOffset, etSiteAddress;
 
-    Spinner spGuideRail, spPdfType, spBracketDistance;
+    Spinner spGuideRail, spBracketDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +35,7 @@ public class Step4Activity extends AppCompatActivity {
         etSiteAddress = findViewById(R.id.etSiteAddress);
 
         spGuideRail = findViewById(R.id.spGuideRail);
-        spPdfType = findViewById(R.id.spPdfType);
+
         spBracketDistance = findViewById(R.id.spBracketDistance);
 
         Button btnPrevious = findViewById(R.id.btnPreviousStep4);
@@ -58,11 +55,6 @@ public class Step4Activity extends AppCompatActivity {
                 new String[]{"9 x 5 mm", "16 x 10 mm"}
         ));
 
-        spPdfType.setAdapter(new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                new String[]{"Single Page PDF", "Multi Page PDF"}
-        ));
 
         spBracketDistance.setAdapter(new ArrayAdapter<>(
                 this,
@@ -83,7 +75,6 @@ public class Step4Activity extends AppCompatActivity {
         repo.getProject().siteAddress = etSiteAddress.getText().toString().trim();
 
         repo.getProject().guideRailPreference = spGuideRail.getSelectedItem().toString();
-        repo.getProject().pdfType = spPdfType.getSelectedItem().toString();
         repo.getProject().bracketDistance =
                 Integer.parseInt(spBracketDistance.getSelectedItem().toString());
 

@@ -50,9 +50,9 @@ public class Step3Activity extends AppCompatActivity {
     private void setupMachineData() {
         machineModels.put("Montanari", new String[]{"M100", "M200", "M300"});
         machineModels.put("Mona Drive", new String[]{"MD10", "MD20"});
-        machineModels.put("Shreya Shakti", new String[]{"SS-1", "SS-2"});
-        machineModels.put("Tektronix", new String[]{"TX-100", "TX-200"});
-        machineModels.put("Sharp", new String[]{"SH-5", "SH-10"});
+        machineModels.put("Bharat Bijli", new String[]{"SS-1", "SS-2"});
+        machineModels.put("Techtronics", new String[]{"TX-100", "TX-200"});
+        machineModels.put("Sharp", new String[]{"SH-5 hp","Sh-7.5 hp", "SH-10 hp"});
     }
 
     private void setupSpinners() {

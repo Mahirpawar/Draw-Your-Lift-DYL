@@ -44,30 +44,36 @@ public class HomeActivity extends AppCompatActivity {
         btnHydraulic.setOnClickListener(v -> liftType = "HYDRAULIC");
 
         btnNext.setOnClickListener(v -> {
-            if (doorType.isEmpty() || liftType.isEmpty()) {
-                Intent intent = new Intent(this, Step1Activity.class);
-                startActivity(intent);
 
+            // 1️⃣ Validate selection
+            if (doorType.isEmpty() || liftType.isEmpty()) {
+                Toast.makeText(
+                        this,
+                        "Please select Door Type and Lift Type",
+                        Toast.LENGTH_SHORT
+                ).show();
                 return;
             }
 
+            // 2️⃣ Validate invalid combinations
             if (doorType.equals("MANUAL") &&
                     (liftType.equals("CANTILEVER") || liftType.equals("HYDRAULIC"))) {
-                Intent intent = new Intent(this, Step1Activity.class);
-                startActivity(intent);
 
+                Toast.makeText(
+                        this,
+                        "Selected lift type is not available with Manual Door",
+                        Toast.LENGTH_LONG
+                ).show();
                 return;
             }
+
+            // 3️⃣ Save to repository
             ProjectRepository repo = ProjectRepository.getInstance();
             repo.getProject().doorType = doorType;
             repo.getProject().liftType = liftType;
 
-            Intent intent = new Intent(this, Step1Activity.class);
-
-            startActivity(intent);
-
-
-            // Step 1 Activity will be added on Day 3
+            // 4️⃣ Navigate
+            startActivity(new Intent(this, Step1Activity.class));
         });
     }
 }

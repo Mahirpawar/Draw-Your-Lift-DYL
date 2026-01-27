@@ -38,7 +38,7 @@ public class Step1Activity extends AppCompatActivity {
         Button btnNext = findViewById(R.id.btnNextStep1);
 
         // Passenger Capacity
-        String[] capacities = {"4", "5", "6", "8", "10", "13"};
+        String[] capacities = {"4 Passenger", "5 Passenger", "6 Passenger", "8 Passenger", "10 Passenger", "13 Passenger"};
         spCapacity.setAdapter(new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_dropdown_item, capacities));
 
@@ -64,7 +64,7 @@ public class Step1Activity extends AppCompatActivity {
         repo.getProject().userName = etUserName.getText().toString().trim();
         repo.getProject().projectName = projectName;
         repo.getProject().passengerCapacity =
-                Integer.parseInt(spCapacity.getSelectedItem().toString());
+                Integer.parseInt(spCapacity.getSelectedItem().toString().split(" ")[0]);
         repo.getProject().numberOfFloors =
                 Integer.parseInt(spFloors.getSelectedItem().toString());
 
