@@ -45,6 +45,7 @@ public class ElevationView extends View {
         textPaint.setColor(Color.BLACK);
         textPaint.setTextSize(28);
         textPaint.setAntiAlias(true);
+
         railPaint = new Paint();
         railPaint.setColor(Color.GRAY);
         railPaint.setStrokeWidth(4);
@@ -178,7 +179,7 @@ public class ElevationView extends View {
                 doorPaint
         );
 
-// outline
+        // outline
         canvas.drawRect(
                 doorX,
                 doorY,
@@ -270,6 +271,7 @@ public class ElevationView extends View {
     private int mmToPx(int mm) {
         return (int) (mm * SCALE);
     }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
