@@ -220,6 +220,7 @@ public class PlanView extends View {
         canvas.drawLine(x, y2, x + 10, y2 - 10, dimPaint);
 
         canvas.save();
+
         canvas.rotate(-90, x + 20, (y1 + y2) / 2);
         canvas.drawText(text, x - 60, (y1 + y2) / 2 + 25 , dimTextPaint);
         canvas.restore();

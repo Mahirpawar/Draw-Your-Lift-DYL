@@ -157,9 +157,6 @@ public class PdfGenerator {
         pdfDocument.finishPage(page);
         pageHeight += 40;
 
-
-
-
         // Save
         File downloadsDir = Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS
@@ -194,10 +191,6 @@ public class PdfGenerator {
         canvas.drawText(title, 40, y, paint);
         canvas.drawLine(40, y + 10, canvas.getWidth() - 40, y + 10, paint);
     }
-
-
-
-
 
     // 🔹 CORE METHOD — DO NOT MODIFY
     private static void createPage(
