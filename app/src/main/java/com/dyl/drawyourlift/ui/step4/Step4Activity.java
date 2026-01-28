@@ -2,6 +2,7 @@ package com.dyl.drawyourlift.ui.step4;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,8 +41,22 @@ public class Step4Activity extends AppCompatActivity {
 
         Button btnPrevious = findViewById(R.id.btnPreviousStep4);
         Button btnSubmit = findViewById(R.id.btnSubmitStep4);
+        View root = findViewById(R.id.rootStep4);
+
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            int bottomInset = insets.getSystemWindowInsetBottom();
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomInset + dpToPx(16)
+            );
+            return insets;
+        });
+
 
         setupSpinners();
+
 
         btnPrevious.setOnClickListener(v -> finish());
         btnSubmit.setOnClickListener(v -> saveAndProceed());
@@ -88,5 +103,8 @@ public class Step4Activity extends AppCompatActivity {
     private int parse(EditText et) {
         String v = et.getText().toString().trim();
         return v.isEmpty() ? 0 : Integer.parseInt(v);
+    }
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
     }
 }

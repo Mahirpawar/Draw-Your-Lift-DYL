@@ -1,81 +1,172 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/rootStep4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
 
+        <!-- ================= SCREEN TITLE ================= -->
         <TextView
             android:text="Step 4 – Custom Dimensions"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginBottom="16dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <EditText android:id="@+id/etLeftWall"
-            android:hint="Left Wall Distance (mm)"
+        <!-- ================= SECTION: SHAFT & WALL DISTANCES ================= -->
+        <TextView
+            android:text="Shaft and Wall Distances"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Left Wall Distance (mm)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etLeftWall"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <EditText android:id="@+id/etMainBracket"
-            android:hint="Main Bracket Distance (mm)"
+        <TextView
+            android:text="Main Bracket Distance (mm)"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etMainBracket"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <EditText android:id="@+id/etCounterBracket"
-            android:hint="Counter Bracket Distance (mm)"
+        <TextView
+            android:text="Counter Bracket Distance (mm)"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etCounterBracket"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <Spinner android:id="@+id/spGuideRail"
+        <!-- ================= SECTION: GUIDE RAIL ================= -->
+        <TextView
+            android:text="Guide Rail Preference"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/spGuideRail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <EditText android:id="@+id/etCabinWallGap"
-            android:hint="Gap Between Cabin and Wall (mm)"
+        <!-- ================= SECTION: CABIN POSITIONING ================= -->
+        <TextView
+            android:text="Cabin Positioning"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Gap Between Cabin and Wall (mm)"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etCabinWallGap"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <EditText android:id="@+id/etCabinOffset"
-            android:hint="Cabin Center Offset (+ / - mm)"
+        <TextView
+            android:text="Cabin Center Offset (+ / − mm)"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etCabinOffset"
             android:inputType="numberSigned"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
-        <Spinner android:id="@+id/spPdfType"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/etSiteAddress"
-            android:hint="Site Address (Optional)"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Spinner android:id="@+id/spBracketDistance"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <LinearLayout
-            android:orientation="horizontal"
+        <!-- ================= SECTION: PDF & SITE INFO ================= -->
+        <TextView
+            android:text="Output and Site Information"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="PDF Type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/spPdfType"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Bracket Distance (mm)"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/spBracketDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="Site Address (Optional)"
+            android:layout_marginTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/etSiteAddress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <!-- ================= NAVIGATION BUTTONS ================= -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp">
 
             <Button
                 android:id="@+id/btnPreviousStep4"
                 android:text="Previous"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <Button
                 android:id="@+id/btnSubmitStep4"
@@ -83,7 +174,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"/>
+                android:layout_marginStart="12dp" />
         </LinearLayout>
 
     </LinearLayout>

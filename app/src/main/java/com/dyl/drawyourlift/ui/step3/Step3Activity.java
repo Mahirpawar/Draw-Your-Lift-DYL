@@ -4,6 +4,7 @@ import static androidx.core.content.ContextCompat.startActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -39,6 +40,19 @@ public class Step3Activity extends AppCompatActivity {
 
         Button btnPrevious = findViewById(R.id.btnPreviousStep3);
         Button btnNext = findViewById(R.id.btnNextStep3);
+        View root = findViewById(R.id.rootStep3);
+
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            int bottomInset = insets.getSystemWindowInsetBottom();
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomInset + dpToPx(16)
+            );
+            return insets;
+        });
+
 
         setupMachineData();
         setupSpinners();
@@ -127,4 +141,8 @@ public class Step3Activity extends AppCompatActivity {
 
 
     }
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
 }
