@@ -3,9 +3,13 @@ package com.dyl.drawyourlift.utils;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.pdf.PdfDocument;
+import android.os.Build;
 import android.os.Environment;
 import android.view.View;
 import android.graphics.Paint;
+
+import androidx.annotation.RequiresApi;
+
 import com.dyl.drawyourlift.drawing.elevation.ElevationView;
 import com.dyl.drawyourlift.drawing.front.FrontView;
 import com.dyl.drawyourlift.drawing.plan.PlanView;
@@ -50,6 +54,7 @@ public class PdfGenerator {
 
         return file;
     }
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private static int drawHeader(
             Canvas canvas,
             String projectName,
