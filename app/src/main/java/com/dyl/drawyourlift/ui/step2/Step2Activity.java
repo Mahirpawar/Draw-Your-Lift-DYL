@@ -2,6 +2,7 @@ package com.dyl.drawyourlift.ui.step2;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -33,6 +34,20 @@ public class Step2Activity extends AppCompatActivity {
 
         Button btnPrevious = findViewById(R.id.btnPreviousStep2);
         Button btnNext = findViewById(R.id.btnNextStep2);
+        View root = findViewById(R.id.rootStep2);
+
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
+            int bottomInset = insets.getSystemWindowInsetBottom();
+
+            v.setPadding(
+                    v.getPaddingLeft(),
+                    v.getPaddingTop(),
+                    v.getPaddingRight(),
+                    bottomInset + dpToPx(16)
+            );
+            return insets;
+        });
+
 
         setupSpinners();
 
@@ -91,4 +106,8 @@ public class Step2Activity extends AppCompatActivity {
         startActivity(new Intent(this, Step3Activity.class));
 
     }
+    private int dpToPx(int dp) {
+        return Math.round(dp * getResources().getDisplayMetrics().density);
+    }
+
 }
