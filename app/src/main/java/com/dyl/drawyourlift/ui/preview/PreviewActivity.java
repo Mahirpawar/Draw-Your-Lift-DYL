@@ -36,9 +36,10 @@ public class PreviewActivity extends AppCompatActivity {
         LinearLayout drawingContainer = new LinearLayout(this);
         drawingContainer.setOrientation(LinearLayout.VERTICAL);
 
+        drawingContainer.addView(new PlanView(this));
         drawingContainer.addView(new ElevationView(this));
         drawingContainer.addView(new FrontView(this));
-        drawingContainer.addView(new PlanView(this));
+
 
         ScrollView scrollView = new ScrollView(this);
         scrollView.addView(drawingContainer);

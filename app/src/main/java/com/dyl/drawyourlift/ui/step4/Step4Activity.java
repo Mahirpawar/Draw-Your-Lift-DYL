@@ -88,13 +88,10 @@ public class Step4Activity extends AppCompatActivity {
         repo.getProject().cabinWallGap = parse(etCabinWallGap);
         repo.getProject().cabinCenterOffset = parse(etCabinOffset);
         repo.getProject().siteAddress = etSiteAddress.getText().toString().trim();
-
         repo.getProject().guideRailPreference = spGuideRail.getSelectedItem().toString();
-        repo.getProject().bracketDistance =
-                Integer.parseInt(spBracketDistance.getSelectedItem().toString());
+        repo.getProject().bracketDistance =Integer.parseInt(spBracketDistance.getSelectedItem().toString());
 
         Toast.makeText(this, "Opening Preview", Toast.LENGTH_SHORT).show();
-
 
         startActivity(new Intent(this, PreviewActivity.class));
 
