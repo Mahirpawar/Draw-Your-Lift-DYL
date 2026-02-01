@@ -1,9 +1,7 @@
 package com.dyl.drawyourlift.drawing.plan;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.view.View;
 
 import com.dyl.drawyourlift.data.model.LiftProject;
@@ -11,220 +9,201 @@ import com.dyl.drawyourlift.data.repository.ProjectRepository;
 
 public class PlanView extends View {
 
-    private Paint shaftPaint, cabinPaint, counterPaint, doorPaint, textPaint;
     private static final float SCALE = 0.2f;
-    private Paint dimPaint;
-    private Paint dimTextPaint;
 
+    private static final int TOP = 120;
+    private static final int LEFT = 140;
+    private static final int RIGHT = 180;
+    private static final int BOTTOM = 180;
 
-    public PlanView(Context context) {
-        super(context);
+    // Engineering constants (mm)
+    private static final int WALL_GAP = 40;
+    private static final int CABIN_WALL = 50;
+    private static final int DOOR_GAP = 40;
+    private static final int DOOR_RECESS = 150;
+
+    private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
+    private Paint doorPaint, dimPaint, textPaint, centerPaint;
+
+    public PlanView(Context c) {
+        super(c);
         init();
     }
 
     private void init() {
-
-        shaftPaint = new Paint();
-        shaftPaint.setColor(Color.BLACK);
-        shaftPaint.setStyle(Paint.Style.STROKE);
-        shaftPaint.setStrokeWidth(4);
-
-        cabinPaint = new Paint();
-        cabinPaint.setColor(Color.LTGRAY);
-        cabinPaint.setStyle(Paint.Style.FILL);
-
-        counterPaint = new Paint();
-        counterPaint.setColor(Color.DKGRAY);
-        counterPaint.setStyle(Paint.Style.FILL);
-
-        doorPaint = new Paint();
-        doorPaint.setColor(Color.WHITE);
-        doorPaint.setStyle(Paint.Style.FILL);
-
-        textPaint = new Paint();
-        textPaint.setColor(Color.BLACK);
-        textPaint.setTextSize(26);
-        textPaint.setAntiAlias(true);
-
-        dimPaint = new Paint();
-        dimPaint.setColor(Color.BLACK);
-        dimPaint.setStrokeWidth(3);
-
-        dimTextPaint = new Paint();
-        dimTextPaint.setColor(Color.BLACK);
-        dimTextPaint.setTextSize(24);
-        dimTextPaint.setAntiAlias(true);
-
+        shaftPaint = stroke(Color.BLACK, 6);
+        cabinPaint = fill(Color.LTGRAY);
+        innerPaint = fill(Color.WHITE);
+        counterPaint = fill(Color.DKGRAY);
+        doorPaint = fill(Color.WHITE);
+        dimPaint = stroke(Color.BLACK, 2);
+        textPaint = text(22);
+        centerPaint = stroke(Color.GRAY, 2);
+        centerPaint.setPathEffect(new DashPathEffect(new float[]{10,10},0));
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
+    protected void onDraw(Canvas c) {
+        super.onDraw(c);
         LiftProject p = ProjectRepository.getInstance().getProject();
 
-        int shaftWidthPx = mmToPx(p.shaftWidth);
-        int shaftDepthPx = mmToPx(p.shaftDepth);
+        int shaftW = mm(p.shaftWidth);
+        int shaftD = mm(p.shaftDepth);
 
-        int cabinWidthPx = (int) (shaftWidthPx * 0.7);
-        int cabinDepthPx = (int) (shaftDepthPx * 0.7);
+        int sx = LEFT;
+        int sy = TOP;
+        int sr = sx + shaftW;
+        int sb = sy + shaftD;
 
-        int startX = 100;
-        int startY = 50;
+        int cx = sx + shaftW / 2;
+        int cy = sy + shaftD / 2;
 
-        // Shaft outline
-        canvas.drawRect(
-                startX,
-                startY,
-                startX + shaftWidthPx,
-                startY + shaftDepthPx,
-                shaftPaint
-        );
-        // Shaft width dimension
-        drawHorizontalDimension(
-                canvas,
-                startX,
-                startX + shaftWidthPx,
-                startY + shaftDepthPx + 80,
-                "Shaft Width: " + p.shaftWidth + " mm"
-        );
-        // Shaft depth dimension
-        drawVerticalDimension(
-                canvas,
-                startY,
-                startY + shaftDepthPx,
-                startX + shaftWidthPx + 40,
-                "Shaft Depth: " + p.shaftDepth + " mm"
-        );
+        // SHAFT
+        c.drawRect(sx, sy, sr, sb, shaftPaint);
 
+        // CENTERLINES
+        c.drawLine(cx, sy, cx, sb, centerPaint);
+        c.drawLine(sx, cy, sr, cy, centerPaint);
 
-
-        // Cabin footprint
-        int cabinX = startX + (shaftWidthPx - cabinWidthPx) / 2;
-        int cabinY = startY + (shaftDepthPx - cabinDepthPx) / 2;
-
-        canvas.drawRect(
-                cabinX,
-                cabinY,
-                cabinX + cabinWidthPx,
-                cabinY + cabinDepthPx,
-                cabinPaint
-        );
-
-        // Counterweight footprint
-        int counterSize = mmToPx(p.counterDbgSize);
-
+        // COUNTER
+        int counter = mm(p.counterDbgSize);
         int counterX, counterY;
-        if (p.counterFrameSide.equalsIgnoreCase("Left")) {
-            counterX = startX;
-            counterY = cabinY;
-        } else if (p.counterFrameSide.equalsIgnoreCase("Right")) {
-            counterX = startX + shaftWidthPx - counterSize;
-            counterY = cabinY;
-        } else { // Back
-            counterX = cabinX;
-            counterY = startY;
+
+        if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
+            counterX = sx + mm(WALL_GAP);
+            counterY = cy - counter / 2;
+        } else if ("Right".equalsIgnoreCase(p.counterFrameSide)) {
+            counterX = sr - mm(WALL_GAP) - counter;
+            counterY = cy - counter / 2;
+        } else {
+            counterX = cx - counter / 2;
+            counterY = sy + mm(WALL_GAP);
         }
 
-        canvas.drawRect(
-                counterX,
-                counterY,
-                counterX + counterSize,
-                counterY + counterSize,
-                counterPaint
+        c.drawRect(counterX, counterY,
+                counterX + counter, counterY + counter, counterPaint);
+
+        // CABIN OUTER
+        int cabinOuterW = shaftW - mm(WALL_GAP * 2);
+        int cabinOuterD = shaftD - mm(WALL_GAP * 2 + DOOR_GAP + DOOR_RECESS);
+
+        int cabinX = sx + mm(WALL_GAP);
+        int cabinY = sy + mm(WALL_GAP);
+
+        c.drawRect(cabinX, cabinY,
+                cabinX + cabinOuterW,
+                cabinY + cabinOuterD, cabinPaint);
+
+        // CABIN INNER
+        c.drawRect(
+                cabinX + mm(CABIN_WALL),
+                cabinY + mm(CABIN_WALL),
+                cabinX + cabinOuterW - mm(CABIN_WALL),
+                cabinY + cabinOuterD - mm(CABIN_WALL),
+                innerPaint
         );
 
-        // Door opening (front side)
-        int doorWidthPx = mmToPx(p.clearOpening);
-        int doorX = cabinX + (cabinWidthPx - doorWidthPx) / 2;
-        int doorY = startY + shaftDepthPx - mmToPx(80);
+        // DOOR PASSAGE (VISUAL CONNECTION)
+        int doorW = mm(p.clearOpening);
+        int doorX = cx - doorW / 2;
 
-        canvas.drawRect(
+        int passageTop = cabinY + cabinOuterD;
+        int passageBottom = passageTop + mm(DOOR_RECESS);
+
+        c.drawRect(
                 doorX,
-                doorY,
-                doorX + doorWidthPx,
-                startY + shaftDepthPx,
-                doorPaint
+                passageTop,
+                doorX + doorW,
+                passageBottom,
+                innerPaint
         );
 
-        canvas.drawRect(
-                doorX,
-                doorY,
-                doorX + doorWidthPx,
-                startY + shaftDepthPx,
-                shaftPaint
-        );
+        // LANDING DOORS (CENTER OPENING)
+        int doorLeaf = doorW / 2;
+        int doorY = passageBottom + mm(DOOR_GAP);
 
-        // Label
-        canvas.drawText(
-                "PLAN VIEW",
-                startX,
-                startY + shaftDepthPx + 40,
-                textPaint
-        );
-    }
+        c.drawRect(doorX, doorY,
+                doorX + doorLeaf, doorY + mm(40), doorPaint);
 
-    private int mmToPx(int mm) {
-        return (int) (mm * SCALE);
+        c.drawRect(doorX + doorLeaf, doorY,
+                doorX + doorW, doorY + mm(40), doorPaint);
+
+        c.drawRect(doorX, doorY,
+                doorX + doorW, doorY + mm(40), shaftPaint);
+
+        // TITLE
+        c.drawText("PLAN VIEW", sx, sy - 30, textPaint);
+
+        // DIMENSIONS
+        int dy = sb + 40;
+        drawH(c, doorX, doorX + doorW, dy,
+                "Clear Opening : " + p.clearOpening + " mm");
+        dy += 30;
+        drawH(c, cabinX, cabinX + cabinOuterW, dy, "Cabin Outer");
+        dy += 30;
+        drawH(c, sx, sr, dy,
+                "Shaft Width : " + p.shaftWidth + " mm");
+
+        int dx = sr + 40;
+        drawV(c, cabinY, cabinY + cabinOuterD, dx, "Cabin Depth");
+        dx += 30;
+        drawV(c, sy, sb, dx,
+                "Shaft Depth : " + p.shaftDepth + " mm");
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
+    protected void onMeasure(int w, int h) {
         LiftProject p = ProjectRepository.getInstance().getProject();
-
-        int desiredWidth = mmToPx(p.shaftWidth) + 300;
-        int desiredHeight = mmToPx(p.shaftDepth) + 350;
-
-        setMeasuredDimension(desiredWidth, desiredHeight);
+        setMeasuredDimension(
+                mm(p.shaftWidth) + LEFT + RIGHT,
+                mm(p.shaftDepth) + TOP + BOTTOM
+        );
     }
 
-    private void drawHorizontalDimension(
-            Canvas canvas,
-            int x1, int x2,
-            int y,
-            String text
-    ) {
-        // Extension lines
-        canvas.drawLine(x1, y - 20, x1, y + 20, dimPaint);
-        canvas.drawLine(x2, y - 20, x2, y + 20, dimPaint);
+    // ===== helpers =====
+    private int mm(int v) { return (int)(v * SCALE); }
 
-        // Dimension line
-        canvas.drawLine(x1, y, x2, y, dimPaint);
-
-        // Arrowheads
-        canvas.drawLine(x1, y, x1 + 10, y - 10, dimPaint);
-        canvas.drawLine(x1, y, x1 + 10, y + 10, dimPaint);
-
-        canvas.drawLine(x2, y, x2 - 10, y - 10, dimPaint);
-        canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
-
-        // Text
-        canvas.drawText(text, (x1 + x2)/2 - 120, y + 40, dimTextPaint);
-    }
-    private void drawVerticalDimension(
-            Canvas canvas,
-            int y1, int y2,
-            int x,
-            String text
-    ) {
-        canvas.drawLine(x - 20, y1, x + 20, y1, dimPaint);
-        canvas.drawLine(x - 20, y2, x + 20, y2, dimPaint);
-
-        canvas.drawLine(x, y1, x, y2, dimPaint);
-
-        canvas.drawLine(x, y1, x - 10, y1 + 10, dimPaint);
-        canvas.drawLine(x, y1, x + 10, y1 + 10, dimPaint);
-
-        canvas.drawLine(x, y2, x - 10, y2 - 10, dimPaint);
-        canvas.drawLine(x, y2, x + 10, y2 - 10, dimPaint);
-
-        canvas.save();
-
-        canvas.rotate(-90, x + 20, (y1 + y2) / 2);
-        canvas.drawText(text, x - 60, (y1 + y2) / 2 + 25 , dimTextPaint);
-        canvas.restore();
+    private Paint stroke(int c, int w) {
+        Paint p = new Paint();
+        p.setColor(c);
+        p.setStyle(Paint.Style.STROKE);
+        p.setStrokeWidth(w);
+        p.setAntiAlias(true);
+        return p;
     }
 
+    private Paint fill(int c) {
+        Paint p = new Paint();
+        p.setColor(c);
+        p.setStyle(Paint.Style.FILL);
+        p.setAntiAlias(true);
+        return p;
+    }
 
+    private Paint text(int s) {
+        Paint p = new Paint();
+        p.setColor(Color.BLACK);
+        p.setTextSize(s);
+        p.setAntiAlias(true);
+        return p;
+    }
+
+    private void drawH(Canvas c, int x1, int x2, int y, String t) {
+        c.drawLine(x1, y, x2, y, dimPaint);
+        c.drawLine(x1, y - 8, x1, y + 8, dimPaint);
+        c.drawLine(x2, y - 8, x2, y + 8, dimPaint);
+        float w = textPaint.measureText(t);
+        c.drawText(t, (x1 + x2)/2f - w/2f, y - 6, textPaint);
+    }
+
+    private void drawV(Canvas c, int y1, int y2, int x, String t) {
+        c.drawLine(x, y1, x, y2, dimPaint);
+        c.drawLine(x - 8, y1, x + 8, y1, dimPaint);
+        c.drawLine(x - 8, y2, x + 8, y2, dimPaint);
+        c.save();
+        c.rotate(-90, x + 20, (y1 + y2)/2f);
+        float w = textPaint.measureText(t);
+        c.drawText(t, x + 20 - w/2f, (y1 + y2)/2f, textPaint);
+        c.restore();
+    }
 }
