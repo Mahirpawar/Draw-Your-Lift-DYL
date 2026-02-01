@@ -9,18 +9,29 @@ import com.dyl.drawyourlift.data.repository.ProjectRepository;
 
 public class PlanView extends View {
 
-    private static final float SCALE = 0.2f;
+    private static final float SCALE = 0.2f; // 1 mm = 0.2 px
 
-    private static final int TOP = 120;
+    // Margins
     private static final int LEFT = 140;
+    private static final int TOP = 160;
     private static final int RIGHT = 180;
-    private static final int BOTTOM = 180;
+    private static final int BOTTOM = 220;
 
-    // Engineering constants (mm)
-    private static final int WALL_GAP = 40;
+    // Engineering constants (REAL mm)
+    private static final int RAIL_WIDTH = 65;
+    private static final int CLEAR_GAP = 65;
     private static final int CABIN_WALL = 50;
-    private static final int DOOR_GAP = 40;
-    private static final int DOOR_RECESS = 150;
+
+    private static final int PASSAGE_DEPTH = 60;          // mm
+    private static final int TRACK_THICKNESS = 40;        // mm
+    private static final int LANDING_GAP = 30;            // mm
+    private static final int LANDING_DOOR_THICKNESS = 40; // mm
+    private static final int SHAFT_FACE_OFFSET = 10;      // mm
+
+    // VISUAL tuning (does NOT change real dimensions)
+    private static final float VISUAL_PASSAGE_MULT = 1.4f;
+    private static final float VISUAL_DOOR_MULT = 1.6f;
+    private static final float VISUAL_GAP_COMPRESS = 0.7f;
 
     private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
     private Paint doorPaint, dimPaint, textPaint, centerPaint;
@@ -35,11 +46,11 @@ public class PlanView extends View {
         cabinPaint = fill(Color.LTGRAY);
         innerPaint = fill(Color.WHITE);
         counterPaint = fill(Color.DKGRAY);
-        doorPaint = fill(Color.WHITE);
+        doorPaint = fill(Color.DKGRAY);
         dimPaint = stroke(Color.BLACK, 2);
         textPaint = text(22);
         centerPaint = stroke(Color.GRAY, 2);
-        centerPaint.setPathEffect(new DashPathEffect(new float[]{10,10},0));
+        centerPaint.setPathEffect(new DashPathEffect(new float[]{10, 10}, 0));
     }
 
     @Override
@@ -47,6 +58,7 @@ public class PlanView extends View {
         super.onDraw(c);
         LiftProject p = ProjectRepository.getInstance().getProject();
 
+        // ================= SHAFT =================
         int shaftW = mm(p.shaftWidth);
         int shaftD = mm(p.shaftDepth);
 
@@ -58,94 +70,180 @@ public class PlanView extends View {
         int cx = sx + shaftW / 2;
         int cy = sy + shaftD / 2;
 
-        // SHAFT
         c.drawRect(sx, sy, sr, sb, shaftPaint);
 
-        // CENTERLINES
+        // Centerlines
         c.drawLine(cx, sy, cx, sb, centerPaint);
         c.drawLine(sx, cy, sr, cy, centerPaint);
 
-        // COUNTER
+        // ================= WALL GAP (STEP 4) =================
+        int wallGap = mm(p.mainBracketDistance + RAIL_WIDTH);
+
+        // ================= COUNTER =================
         int counter = mm(p.counterDbgSize);
         int counterX, counterY;
 
         if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
-            counterX = sx + mm(WALL_GAP);
+            counterX = sx + wallGap;
             counterY = cy - counter / 2;
         } else if ("Right".equalsIgnoreCase(p.counterFrameSide)) {
-            counterX = sr - mm(WALL_GAP) - counter;
+            counterX = sr - wallGap - counter;
             counterY = cy - counter / 2;
-        } else {
+        } else { // Back
             counterX = cx - counter / 2;
-            counterY = sy + mm(WALL_GAP);
+            counterY = sy + wallGap;
         }
 
         c.drawRect(counterX, counterY,
                 counterX + counter, counterY + counter, counterPaint);
 
-        // CABIN OUTER
-        int cabinOuterW = shaftW - mm(WALL_GAP * 2);
-        int cabinOuterD = shaftD - mm(WALL_GAP * 2 + DOOR_GAP + DOOR_RECESS);
+        // ================= CABIN =================
+        int cabinX, cabinY, cabinW, cabinD;
 
-        int cabinX = sx + mm(WALL_GAP);
-        int cabinY = sy + mm(WALL_GAP);
+        if ("Back".equalsIgnoreCase(p.counterFrameSide)) {
 
+            cabinX = sx + wallGap;
+            cabinY = counterY + counter + mm(CLEAR_GAP);
+
+            cabinW = shaftW - wallGap * 2;
+            cabinD = sb - cabinY - wallGap - mm(PASSAGE_DEPTH);
+
+        } else {
+
+            if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
+                cabinX = counterX + counter + mm(CLEAR_GAP);
+            } else {
+                cabinX = sx + wallGap;
+            }
+
+            cabinY = sy + wallGap;
+            cabinW = sr - wallGap - mm(CLEAR_GAP) - counter - cabinX;
+            cabinD = shaftD - wallGap * 2;
+        }
+
+        // Safety clamp
+        cabinW = Math.max(cabinW, mm(900));
+        cabinD = Math.max(cabinD, mm(900));
+
+        // Cabin outer
         c.drawRect(cabinX, cabinY,
-                cabinX + cabinOuterW,
-                cabinY + cabinOuterD, cabinPaint);
+                cabinX + cabinW, cabinY + cabinD, cabinPaint);
+        c.drawRect(cabinX, cabinY,
+                cabinX + cabinW, cabinY + cabinD, shaftPaint);
 
-        // CABIN INNER
+        // Cabin inner
         c.drawRect(
                 cabinX + mm(CABIN_WALL),
                 cabinY + mm(CABIN_WALL),
-                cabinX + cabinOuterW - mm(CABIN_WALL),
-                cabinY + cabinOuterD - mm(CABIN_WALL),
+                cabinX + cabinW - mm(CABIN_WALL),
+                cabinY + cabinD - mm(CABIN_WALL),
                 innerPaint
         );
 
-        // DOOR PASSAGE (VISUAL CONNECTION)
-        int doorW = mm(p.clearOpening);
-        int doorX = cx - doorW / 2;
+        // ================= DOOR SYSTEM (CORRECT STACK) =================
 
-        int passageTop = cabinY + cabinOuterD;
-        int passageBottom = passageTop + mm(DOOR_RECESS);
+        int clearOpening = mm(p.clearOpening); // e.g. 700
+        int halfDoor = clearOpening / 2;
+
+        int doorLeft = cx - clearOpening / 2;
+        int doorRight = cx + clearOpening / 2;
+
+// REAL (non-compressed) vertical sizes
+        int passagePx = mm(PASSAGE_DEPTH);              // 60
+        int trackPx = mm(TRACK_THICKNESS);              // 40
+        int gapPx = mm(LANDING_GAP);                    // 30
+        int landingDoorPx = mm(LANDING_DOOR_THICKNESS); // 40
+
+// Vertical stacking (TOP → BOTTOM)
+        int passageTop = cabinY + cabinD;
+        int passageBottom = passageTop + passagePx;
+
+        int cabinTrackTop = passageBottom;
+        int cabinTrackBottom = cabinTrackTop + trackPx;
+
+        int landingGapTop = cabinTrackBottom;
+        int landingGapBottom = landingGapTop + gapPx;
+
+        int landingDoorTop = landingGapBottom;
+        int landingDoorBottom = landingDoorTop + landingDoorPx;
+
+// Clamp landing door inside shaft face (10 mm offset)
+        int shaftFaceY = sb - mm(SHAFT_FACE_OFFSET);
+        if (landingDoorBottom > shaftFaceY) {
+            int shift = landingDoorBottom - shaftFaceY;
+            landingDoorTop -= shift;
+            landingDoorBottom -= shift;
+            landingGapTop -= shift;
+            landingGapBottom -= shift;
+            cabinTrackTop -= shift;
+            cabinTrackBottom -= shift;
+            passageTop -= shift;
+            passageBottom -= shift;
+        }
+
+// ---- PASSAGE ----
+        c.drawRect(doorLeft, passageTop, doorRight, passageBottom, innerPaint);
+        c.drawRect(doorLeft, passageTop, doorRight, passageBottom, shaftPaint);
+
+// ---- CABIN DOOR TRACK ----
+        int trackLeft = doorLeft - halfDoor;
+        int trackRight = doorRight + halfDoor;
+
+        c.drawRect(trackLeft, cabinTrackTop, trackRight, cabinTrackBottom, shaftPaint);
+
+// ---- VISUAL GAP (30 mm) ----
+        c.drawRect(
+                doorLeft,
+                landingGapTop,
+                doorRight,
+                landingGapBottom,
+                innerPaint
+        );
+
+// ---- LANDING DOOR (CENTER OPEN, 40 mm) ----
+        c.drawRect(
+                doorLeft - halfDoor,
+                landingDoorTop,
+                doorLeft,
+                landingDoorBottom,
+                doorPaint
+        );
 
         c.drawRect(
-                doorX,
-                passageTop,
-                doorX + doorW,
-                passageBottom,
-                innerPaint
+                doorRight,
+                landingDoorTop,
+                doorRight + halfDoor,
+                landingDoorBottom,
+                doorPaint
         );
 
-        // LANDING DOORS (CENTER OPENING)
-        int doorLeaf = doorW / 2;
-        int doorY = passageBottom + mm(DOOR_GAP);
+        c.drawRect(
+                doorLeft,
+                landingDoorTop,
+                doorRight,
+                landingDoorBottom,
+                shaftPaint
+        );
 
-        c.drawRect(doorX, doorY,
-                doorX + doorLeaf, doorY + mm(40), doorPaint);
 
-        c.drawRect(doorX + doorLeaf, doorY,
-                doorX + doorW, doorY + mm(40), doorPaint);
+        // ================= TEXT =================
+        c.drawText("PLAN VIEW", sx, sy - 40, textPaint);
 
-        c.drawRect(doorX, doorY,
-                doorX + doorW, doorY + mm(40), shaftPaint);
-
-        // TITLE
-        c.drawText("PLAN VIEW", sx, sy - 30, textPaint);
-
-        // DIMENSIONS
+        // ================= DIMENSIONS =================
         int dy = sb + 40;
-        drawH(c, doorX, doorX + doorW, dy,
+        drawH(c, doorLeft, doorRight, dy,
                 "Clear Opening : " + p.clearOpening + " mm");
+
         dy += 30;
-        drawH(c, cabinX, cabinX + cabinOuterW, dy, "Cabin Outer");
+        drawH(c, cabinX, cabinX + cabinW, dy, "Cabin Outer");
+
         dy += 30;
         drawH(c, sx, sr, dy,
                 "Shaft Width : " + p.shaftWidth + " mm");
 
         int dx = sr + 40;
-        drawV(c, cabinY, cabinY + cabinOuterD, dx, "Cabin Depth");
+        drawV(c, cabinY, cabinY + cabinD, dx, "Cabin Depth");
+
         dx += 30;
         drawV(c, sy, sb, dx,
                 "Shaft Depth : " + p.shaftDepth + " mm");
@@ -160,8 +258,8 @@ public class PlanView extends View {
         );
     }
 
-    // ===== helpers =====
-    private int mm(int v) { return (int)(v * SCALE); }
+    // ================= HELPERS =================
+    private int mm(int v) { return (int) (v * SCALE); }
 
     private Paint stroke(int c, int w) {
         Paint p = new Paint();
@@ -193,7 +291,7 @@ public class PlanView extends View {
         c.drawLine(x1, y - 8, x1, y + 8, dimPaint);
         c.drawLine(x2, y - 8, x2, y + 8, dimPaint);
         float w = textPaint.measureText(t);
-        c.drawText(t, (x1 + x2)/2f - w/2f, y - 6, textPaint);
+        c.drawText(t, (x1 + x2) / 2f - w / 2f, y - 6, textPaint);
     }
 
     private void drawV(Canvas c, int y1, int y2, int x, String t) {
@@ -201,9 +299,9 @@ public class PlanView extends View {
         c.drawLine(x - 8, y1, x + 8, y1, dimPaint);
         c.drawLine(x - 8, y2, x + 8, y2, dimPaint);
         c.save();
-        c.rotate(-90, x + 20, (y1 + y2)/2f);
+        c.rotate(-90, x + 20, (y1 + y2) / 2f);
         float w = textPaint.measureText(t);
-        c.drawText(t, x + 20 - w/2f, (y1 + y2)/2f, textPaint);
+        c.drawText(t, x + 20 - w / 2f, (y1 + y2) / 2f, textPaint);
         c.restore();
     }
 }
