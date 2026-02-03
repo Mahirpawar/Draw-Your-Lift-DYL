@@ -30,6 +30,9 @@ public class PlanView extends View {
     // Counterweight visual thickness (short side)
     private static final int DBG_THICKNESS = 120; // mm
     private static final int COUNTER_BACK_OFFSET = 20;
+    // Fixed default distance of counter from back wall (mm)
+    private static final int DEFAULT_COUNTER_WALL_GAP = 50;
+
 
 
 
@@ -40,6 +43,8 @@ public class PlanView extends View {
 
     private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
     private Paint doorPaint, dimPaint, textPaint, centerPaint;
+    int counterBracketDistance; // mm (0 if not entered)
+
 
     public PlanView(Context c) {
         super(c);
@@ -108,10 +113,16 @@ public class PlanView extends View {
 
         } else { // Back
 
-            // FIXED anchor line from back wall (red line)
-            int backDbgStart = sy + wallGap + mm(COUNTER_BACK_OFFSET);
+            // Fixed counter anchor from back wall (independent of rail distance)
+            int counterWallGapMm =
+                    DEFAULT_COUNTER_WALL_GAP
+                            + p.counterBracketDistance   // user-controlled ONLY
+                            + COUNTER_BACK_OFFSET;
 
-// DBG always starts from this line
+            int backDbgStart = sy + mm(counterWallGapMm);
+
+
+            // DBG always starts from this line
             counterY = backDbgStart;
 
 // DBG grows only in length, position never shifts
