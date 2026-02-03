@@ -27,11 +27,16 @@ public class PlanView extends View {
     private static final int LANDING_GAP = 30;            // mm
     private static final int LANDING_DOOR_THICKNESS = 40; // mm
     private static final int SHAFT_FACE_OFFSET = 10;      // mm
+    // Counterweight visual thickness (short side)
+    private static final int DBG_THICKNESS = 120; // mm
+    private static final int COUNTER_BACK_OFFSET = 20;
+
+
 
     // VISUAL tuning (does NOT change real dimensions)
-    private static final float VISUAL_PASSAGE_MULT = 1.4f;
-    private static final float VISUAL_DOOR_MULT = 1.6f;
-    private static final float VISUAL_GAP_COMPRESS = 0.7f;
+    // Visual exaggeration for counter DBG long side
+    private static final float DBG_VISUAL_MULT = 1.6f;
+
 
     private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
     private Paint doorPaint, dimPaint, textPaint, centerPaint;
@@ -79,23 +84,50 @@ public class PlanView extends View {
         // ================= WALL GAP (STEP 4) =================
         int wallGap = mm(p.mainBracketDistance + RAIL_WIDTH);
 
-        // ================= COUNTER =================
-        int counter = mm(p.counterDbgSize);
+        // ================= COUNTER (RECTANGULAR DBG) =================
+
+// Long side = user DBG size (parallel to door)
+        int dbgLength = (int) (mm(p.counterDbgSize) * DBG_VISUAL_MULT);
+
+
+// Short side = fixed visual thickness
+        int dbgThickness = mm(DBG_THICKNESS);
+
         int counterX, counterY;
 
         if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
+
+            // Vertical DBG on left wall, long side horizontal
             counterX = sx + wallGap;
-            counterY = cy - counter / 2;
+            counterY = cy - dbgThickness / 2;
+
         } else if ("Right".equalsIgnoreCase(p.counterFrameSide)) {
-            counterX = sr - wallGap - counter;
-            counterY = cy - counter / 2;
+
+            counterX = sr - wallGap - dbgLength;
+            counterY = cy - dbgThickness / 2;
+
         } else { // Back
-            counterX = cx - counter / 2;
-            counterY = sy + wallGap;
+
+            // FIXED anchor line from back wall (red line)
+            int backDbgStart = sy + wallGap + mm(COUNTER_BACK_OFFSET);
+
+// DBG always starts from this line
+            counterY = backDbgStart;
+
+// DBG grows only in length, position never shifts
+            counterX = cx - dbgLength / 2;
+
         }
 
-        c.drawRect(counterX, counterY,
-                counterX + counter, counterY + counter, counterPaint);
+// Draw rectangular counterweight
+        c.drawRect(
+                counterX,
+                counterY,
+                counterX + dbgLength,
+                counterY + dbgThickness,
+                counterPaint
+        );
+
 
         // ================= CABIN =================
         int cabinX, cabinY, cabinW, cabinD;
@@ -103,7 +135,7 @@ public class PlanView extends View {
         if ("Back".equalsIgnoreCase(p.counterFrameSide)) {
 
             cabinX = sx + wallGap;
-            cabinY = counterY + counter + mm(CLEAR_GAP);
+            cabinY = counterY + dbgThickness + mm(CLEAR_GAP);
 
             cabinW = shaftW - wallGap * 2;
             cabinD = sb - cabinY - wallGap - mm(PASSAGE_DEPTH);
@@ -111,15 +143,16 @@ public class PlanView extends View {
         } else {
 
             if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
-                cabinX = counterX + counter + mm(CLEAR_GAP);
+                cabinX = counterX + dbgThickness + mm(CLEAR_GAP);
             } else {
                 cabinX = sx + wallGap;
             }
 
             cabinY = sy + wallGap;
-            cabinW = sr - wallGap - mm(CLEAR_GAP) - counter - cabinX;
+            cabinW = sr - wallGap - mm(CLEAR_GAP) - dbgThickness - cabinX;
             cabinD = shaftD - wallGap * 2;
         }
+
 
         // Safety clamp
         cabinW = Math.max(cabinW, mm(900));
