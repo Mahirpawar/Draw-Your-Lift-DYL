@@ -29,18 +29,11 @@ public class PlanView extends View {
     private static final int SHAFT_FACE_OFFSET = 10;      // mm
     // Counterweight visual thickness (short side)
     private static final int DBG_THICKNESS = 120; // mm
-    private static final int COUNTER_BACK_OFFSET = 20;
-    // Fixed default distance of counter from back wall (mm)
-    private static final int DEFAULT_COUNTER_WALL_GAP = 50;
-
-
-
+    private static final int COUNTER_BACK_OFFSET = 70;
 
     // VISUAL tuning (does NOT change real dimensions)
     // Visual exaggeration for counter DBG long side
     private static final float DBG_VISUAL_MULT = 1.6f;
-
-
     private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
     private Paint doorPaint, dimPaint, textPaint, centerPaint;
     int counterBracketDistance; // mm (0 if not entered)
@@ -114,9 +107,7 @@ public class PlanView extends View {
         } else { // Back
 
             // Fixed counter anchor from back wall (independent of rail distance)
-            int counterWallGapMm =
-                    DEFAULT_COUNTER_WALL_GAP
-                            + p.counterBracketDistance   // user-controlled ONLY
+            int counterWallGapMm = p.counterBracketDistance   // user-controlled ONLY
                             + COUNTER_BACK_OFFSET;
 
             int backDbgStart = sy + mm(counterWallGapMm);
