@@ -64,12 +64,10 @@ public class PlanView extends View {
         // ================= SHAFT =================
         int shaftW = mm(p.shaftWidth);
         int shaftD = mm(p.shaftDepth);
-
         int sx = LEFT;
         int sy = TOP;
         int sr = sx + shaftW;
         int sb = sy + shaftD;
-
         int cx = sx + shaftW / 2;
         int cy = sy + shaftD / 2;
 
@@ -84,17 +82,16 @@ public class PlanView extends View {
 
         // ================= COUNTER (RECTANGULAR DBG) =================
 
-// Long side = user DBG size (parallel to door)
+        // Long side = user DBG size (parallel to door)
         int dbgLength = (int) (mm(p.counterDbgSize) * DBG_VISUAL_MULT);
 
 
-// Short side = fixed visual thickness
+        // Short side = fixed visual thickness
         int dbgThickness = mm(DBG_THICKNESS);
 
         int counterX, counterY;
 
         if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
-
             // Vertical DBG on left wall, long side horizontal
             counterX = sx + wallGap;
             counterY = cy - dbgThickness / 2;
@@ -105,23 +102,20 @@ public class PlanView extends View {
             counterY = cy - dbgThickness / 2;
 
         } else { // Back
-
             // Fixed counter anchor from back wall (independent of rail distance)
             int counterWallGapMm = p.counterBracketDistance   // user-controlled ONLY
                             + COUNTER_BACK_OFFSET;
 
             int backDbgStart = sy + mm(counterWallGapMm);
 
-
             // DBG always starts from this line
             counterY = backDbgStart;
 
-// DBG grows only in length, position never shifts
+            // DBG grows only in length, position never shifts
             counterX = cx - dbgLength / 2;
-
         }
 
-// Draw rectangular counterweight
+        // Draw rectangular counterweight
         c.drawRect(
                 counterX,
                 counterY,
@@ -129,8 +123,6 @@ public class PlanView extends View {
                 counterY + dbgThickness,
                 counterPaint
         );
-
-
         // ================= CABIN =================
         int cabinX, cabinY, cabinW, cabinD;
 
@@ -138,7 +130,6 @@ public class PlanView extends View {
 
             cabinX = sx + wallGap;
             cabinY = counterY + dbgThickness + mm(CLEAR_GAP);
-
             cabinW = shaftW - wallGap * 2;
             cabinD = sb - cabinY - wallGap - mm(PASSAGE_DEPTH);
 
@@ -149,7 +140,6 @@ public class PlanView extends View {
             } else {
                 cabinX = sx + wallGap;
             }
-
             cabinY = sy + wallGap;
             cabinW = sr - wallGap - mm(CLEAR_GAP) - dbgThickness - cabinX;
             cabinD = shaftD - wallGap * 2;
@@ -159,13 +149,11 @@ public class PlanView extends View {
         // Safety clamp
         cabinW = Math.max(cabinW, mm(900));
         cabinD = Math.max(cabinD, mm(900));
-
         // Cabin outer
         c.drawRect(cabinX, cabinY,
                 cabinX + cabinW, cabinY + cabinD, cabinPaint);
         c.drawRect(cabinX, cabinY,
                 cabinX + cabinW, cabinY + cabinD, shaftPaint);
-
         // Cabin inner
         c.drawRect(
                 cabinX + mm(CABIN_WALL),
@@ -179,7 +167,6 @@ public class PlanView extends View {
 
         int clearOpening = mm(p.clearOpening); // e.g. 700
         int halfDoor = clearOpening / 2;
-
         int doorLeft = cx - clearOpening / 2;
         int doorRight = cx + clearOpening / 2;
 
@@ -192,13 +179,10 @@ public class PlanView extends View {
 // Vertical stacking (TOP → BOTTOM)
         int passageTop = cabinY + cabinD;
         int passageBottom = passageTop + passagePx;
-
         int cabinTrackTop = passageBottom;
         int cabinTrackBottom = cabinTrackTop + trackPx;
-
         int landingGapTop = cabinTrackBottom;
         int landingGapBottom = landingGapTop + gapPx;
-
         int landingDoorTop = landingGapBottom;
         int landingDoorBottom = landingDoorTop + landingDoorPx;
 
@@ -259,8 +243,6 @@ public class PlanView extends View {
                 landingDoorBottom,
                 shaftPaint
         );
-
-
         // ================= TEXT =================
         c.drawText("PLAN VIEW", sx, sy - 40, textPaint);
 
