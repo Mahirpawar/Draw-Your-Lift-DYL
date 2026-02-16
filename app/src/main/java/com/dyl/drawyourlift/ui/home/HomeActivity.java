@@ -71,7 +71,6 @@ public class HomeActivity extends AppCompatActivity {
             ProjectRepository repo = ProjectRepository.getInstance();
             repo.getProject().doorType = doorType;
             repo.getProject().liftType = liftType;
-
             // 4️⃣ Navigate
             startActivity(new Intent(this, Step1Activity.class));
         });

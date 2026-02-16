@@ -137,9 +137,6 @@ public class Step3Activity extends AppCompatActivity {
 
         Toast.makeText(this, "Step 3 data saved", Toast.LENGTH_SHORT).show();
         startActivity(new Intent(this, Step4Activity.class));
-
-
-
     }
     private int dpToPx(int dp) {
         return Math.round(dp * getResources().getDisplayMetrics().density);
