@@ -263,11 +263,7 @@ public class ElevationView extends View {
                 cabinY - 40,
                 "Clear Opening: " + p.clearOpening + " mm"
         );
-
-
-
     }
-
     private int mmToPx(int mm) {
         return (int) (mm * SCALE);
     }
@@ -346,8 +342,5 @@ public class ElevationView extends View {
         canvas.drawText(text, x - 25, (y1 + y2) / 2f, dimTextPaint);
         canvas.restore();
     }
-
-
-
 }
 
