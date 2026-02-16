@@ -181,7 +181,6 @@ public class FrontView extends View {
 
         canvas.drawLine(x2, y, x2 - 10, y - 10, dimPaint);
         canvas.drawLine(x2, y, x2 - 10, y + 10, dimPaint);
-
         // Text
         canvas.drawText(text, (x1 + x2) / 2 - 40, y - 10, dimTextPaint);
     }
