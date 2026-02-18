@@ -32,6 +32,7 @@ public class PreviewActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT
         ));
 
+
         // ===== SCROLLABLE DRAWINGS =====
         LinearLayout drawingContainer = new LinearLayout(this);
         drawingContainer.setOrientation(LinearLayout.VERTICAL);
