@@ -132,7 +132,7 @@ public class PlanView extends View {
 
         int cabinX, cabinY, cabinW, cabinD;
 
-        int baseGap = mm(50); // fixed wall clearance
+        int baseGap = mm(50); // default clearance from wall
 
         int doorStack =
                 mm(PASSAGE_DEPTH)
@@ -140,58 +140,54 @@ public class PlanView extends View {
                         + mm(LANDING_GAP)
                         + mm(LANDING_DOOR_THICKNESS);
 
-// door side stays fixed
         int cabinFront = sb - doorStack;
+
+// wall gaps increase with main bracket distance
+        int leftGap  = baseGap + mm(p.mainBracketDistance);
+        int rightGap = baseGap + mm(p.mainBracketDistance);
+
+// back gap (user input)
+        int backGapLocal = baseGap + mm(p.cabinWallGap);
 
         if ("Back".equalsIgnoreCase(p.counterFrameSide)) {
 
-            // side gaps increase with main bracket distance
-            int sideGap = baseGap + mm(p.mainBracketDistance);
+            cabinX = sx + leftGap;
+            cabinW = shaftW - leftGap - rightGap;
 
-            cabinX = sx + sideGap;
-
-            cabinW = shaftW - sideGap * 2;
-
-            // counter behind cabin
             cabinY = counterY + dbgThickness + mm(CLEAR_GAP);
-
             cabinD = cabinFront - cabinY;
         }
         else if ("Left".equalsIgnoreCase(p.counterFrameSide)) {
 
-            int rightGap = baseGap + mm(p.mainBracketDistance);
-            int backGapLocal = baseGap;
+            // cabin must be to the right of counter
+            int counterClear = counterX + dbgThickness + mm(CLEAR_GAP);
 
-            // cabin next to counter
-            cabinX = counterX + dbgThickness + mm(CLEAR_GAP);
+            // left boundary is max of wall clearance or counter clearance
+            cabinX = Math.max(sx + leftGap, counterClear);
 
-            cabinW = sr - cabinX - rightGap;
+            cabinW = sr - rightGap - cabinX;
 
             cabinD = shaftD - backGapLocal - doorStack;
-
             cabinY = cabinFront - cabinD;
         }
         else { // RIGHT COUNTER
 
-            int leftGap = baseGap + mm(p.mainBracketDistance);
-            int backGapLocal = baseGap;
+            int counterClear = counterX - mm(CLEAR_GAP);
+
+            int rightLimit = Math.min(sr - rightGap, counterClear);
 
             cabinX = sx + leftGap;
-
-            cabinW = counterX - mm(CLEAR_GAP) - cabinX;
+            cabinW = rightLimit - cabinX;
 
             cabinD = shaftD - backGapLocal - doorStack;
-
             cabinY = cabinFront - cabinD;
         }
 
-// ================= SAFETY CLAMPS =================
+// ================= SAFETY =================
 
-// minimum cabin size
         cabinW = Math.max(mm(900), cabinW);
         cabinD = Math.max(mm(900), cabinD);
 
-// prevent cabin crossing shaft wall
         if (cabinX + cabinW > sr)
             cabinW = sr - cabinX;
 
@@ -201,21 +197,13 @@ public class PlanView extends View {
 
 // ================= DRAW CABIN =================
 
-        c.drawRect(
-                cabinX,
-                cabinY,
-                cabinX + cabinW,
-                cabinY + cabinD,
-                cabinPaint
-        );
+        c.drawRect(cabinX, cabinY,
+                cabinX + cabinW, cabinY + cabinD,
+                cabinPaint);
 
-        c.drawRect(
-                cabinX,
-                cabinY,
-                cabinX + cabinW,
-                cabinY + cabinD,
-                shaftPaint
-        );
+        c.drawRect(cabinX, cabinY,
+                cabinX + cabinW, cabinY + cabinD,
+                shaftPaint);
 
 // inner cabin
         c.drawRect(
