@@ -153,7 +153,7 @@ public class PlanView extends View {
         int cabinFront = sb - doorStack;
 
 // wall gaps increase with main bracket distance
-
+        int effectiveWallGapMM = Math.max(p.mainBracketDistance, p.leftWallDistance);
 
         int leftGap  = baseGap + mm(effectiveWallGapMM);
         int rightGap = baseGap + mm(effectiveWallGapMM);
