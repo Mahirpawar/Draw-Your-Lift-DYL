@@ -33,6 +33,9 @@ public class PlanView extends View {
 
     private Paint shaftPaint, cabinPaint, innerPaint, counterPaint;
     private Paint doorPaint, dimPaint, textPaint, centerPaint;
+    private Paint capacityPaint;
+
+
 
     public PlanView(Context c) {
         super(c);
@@ -52,6 +55,8 @@ public class PlanView extends View {
 
         centerPaint = stroke(Color.GRAY,2);
         centerPaint.setPathEffect(new DashPathEffect(new float[]{10,10},0));
+
+
     }
 
     @Override
@@ -143,8 +148,10 @@ public class PlanView extends View {
         int cabinFront = sb - doorStack;
 
 // wall gaps increase with main bracket distance
-        int leftGap  = baseGap + mm(p.mainBracketDistance);
-        int rightGap = baseGap + mm(p.mainBracketDistance);
+        int effectiveWallGapMM = Math.max(p.mainBracketDistance, p.leftWallDistance);
+
+        int leftGap  = baseGap + mm(effectiveWallGapMM);
+        int rightGap = baseGap + mm(effectiveWallGapMM);
 
 // back gap (user input)
         int backGapLocal = baseGap + mm(p.cabinWallGap);
@@ -188,11 +195,22 @@ public class PlanView extends View {
         cabinW = Math.max(mm(900), cabinW);
         cabinD = Math.max(mm(900), cabinD);
 
+
         if (cabinX + cabinW > sr)
             cabinW = sr - cabinX;
 
         if (cabinY + cabinD > sb)
             cabinD = sb - cabinY;
+
+        // ================= FINAL CABIN SIZE (MM) =================
+
+        int cabinWidthMM = pxToMm(cabinW);
+        int cabinDepthMM = pxToMm(cabinD);
+        int cabinArea = cabinWidthMM * cabinDepthMM;
+        float persons = cabinArea / 210000f;
+
+// round to 1 decimal
+        persons = Math.round(persons * 10f) / 10f;
 
 
 // ================= DRAW CABIN =================
@@ -213,6 +231,14 @@ public class PlanView extends View {
                 cabinY + cabinD - mm(CABIN_WALL),
                 innerPaint
         );
+        // ================= PERSON CAPACITY =================
+
+        String capacityText = "≈ " + persons + " Persons";
+
+        float centerX = cabinX + cabinW / 2f;
+        float centerY = cabinY + cabinD / 2f + capacityPaint.getTextSize()/3;
+
+        c.drawText(capacityText, centerX, centerY, capacityPaint);
 
         // ================= DOOR SYSTEM =================
 
@@ -304,21 +330,23 @@ public class PlanView extends View {
 
         dy += 30;
 
-        drawH(c,cabinX,cabinX+cabinW,dy,"Cabin Outer");
+        drawH(c,cabinX,cabinX+cabinW,dy,"Cabin Width : " + cabinWidthMM + " mm");
 
         dy += 30;
 
         drawH(c,sx,sr,dy,
                 "Shaft Width : "+p.shaftWidth+" mm");
 
+
         int dx = sr + 40;
 
-        drawV(c,cabinY,cabinY+cabinD,dx,"Cabin Depth");
+        drawV(c,cabinY,cabinY+cabinD,dx,"Cabin Depth : " + cabinDepthMM + " mm");
 
         dx += 30;
 
         drawV(c,sy,sb,dx,
                 "Shaft Depth : "+p.shaftDepth+" mm");
+
     }
 
     @Override
@@ -334,6 +362,9 @@ public class PlanView extends View {
 
     private int mm(int v){
         return (int)(v*SCALE);
+    }
+    private int pxToMm(int px){
+        return (int)(px / SCALE);
     }
 
     private Paint stroke(int c,int w){
