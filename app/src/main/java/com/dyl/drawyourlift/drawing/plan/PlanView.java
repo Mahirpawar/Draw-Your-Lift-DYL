@@ -56,7 +56,12 @@ public class PlanView extends View {
         centerPaint = stroke(Color.GRAY,2);
         centerPaint.setPathEffect(new DashPathEffect(new float[]{10,10},0));
 
-
+        capacityPaint = new Paint();
+        capacityPaint.setColor(Color.RED); // gold color
+        capacityPaint.setTextSize(32);
+        capacityPaint.setTextAlign(Paint.Align.CENTER);
+        capacityPaint.setFakeBoldText(true);
+        capacityPaint.setAntiAlias(true);
     }
 
     @Override
@@ -148,7 +153,7 @@ public class PlanView extends View {
         int cabinFront = sb - doorStack;
 
 // wall gaps increase with main bracket distance
-        int effectiveWallGapMM = Math.max(p.mainBracketDistance, p.leftWallDistance);
+
 
         int leftGap  = baseGap + mm(effectiveWallGapMM);
         int rightGap = baseGap + mm(effectiveWallGapMM);
