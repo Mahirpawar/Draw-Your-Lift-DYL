@@ -36,7 +36,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Number of Floors"
+            android:text="Number of Openings"
             android:textStyle="bold"
             android:textSize="14sp"
             android:paddingTop="12dp"

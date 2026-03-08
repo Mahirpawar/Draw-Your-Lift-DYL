@@ -20,7 +20,7 @@ public class ElevationView extends View {
 
 
     // scale: 1 mm = 0.2 px (adjust later)
-    private static final float SCALE = 0.2f;
+    private static final float SCALE = 0.3f;
 
     public ElevationView(Context context) {
         super(context);
@@ -81,7 +81,7 @@ public class ElevationView extends View {
         int travelPx = (floors - 1) * floorHeightPx;
         int totalHeightPx = pitPx + travelPx + overheadPx;
 
-        int startX = 150;
+        int startX = 220;
         int startY = 50;
 
         // Shaft outline
@@ -93,7 +93,7 @@ public class ElevationView extends View {
                 shaftPaint
         );
         // Cabin guide rails
-        int railOffset = mmToPx(100);
+        int railOffset = mmToPx(75);
 
         canvas.drawLine(
                 startX + railOffset,
@@ -112,30 +112,43 @@ public class ElevationView extends View {
         );
 
 
-        int currentY = startY + overheadPx;
+        int currentY = startY + overheadPx + floorHeightPx;
 
         // Draw floors
-        for (int i = floors; i >= 1; i--) {
+        // Starting point after overhead
+        int floorStartY = startY + overheadPx;
 
-            // Floor line
+        for (int i = 0; i < floors; i++) {
+
+            int floorLineY = floorStartY + (i * floorHeightPx);
+
+            // draw floor slab
             canvas.drawLine(
                     startX,
-                    currentY,
+                    floorLineY,
                     startX + shaftWidthPx,
-                    currentY,
+                    floorLineY,
                     floorPaint
             );
 
-            // Floor label
-            String label = (i == 1) ? "G" : "F" + (i - 1);
+            // label position
+            int labelY = floorLineY + floorHeightPx / 2;
+
+            int floorNumber = floors - i - 1;
+
+            String label;
+            if (floorNumber == 0) {
+                label = "G";
+            } else {
+                label = "F" + floorNumber;
+            }
+
             canvas.drawText(
                     label,
                     startX - 60,
-                    currentY + 10,
+                    labelY + textPaint.getTextSize()/3,
                     textPaint
             );
-
-            currentY += floorHeightPx;
         }
         drawVerticalDimension(
                 canvas,
@@ -153,42 +166,83 @@ public class ElevationView extends View {
         int cabinX = startX + (shaftWidthPx - cabinWidthPx) / 2;
         int cabinY = startY + overheadPx + travelPx - floorHeightPx;
 
-// ================= CABIN BODY =================
-        canvas.drawRect(
-                cabinX,
-                cabinY,
-                cabinX + cabinWidthPx,
-                cabinY + cabinHeightPx,
-                cabinPaint
-        );
+// ================= DOOR FRAME =================
 
-// ================= DOOR OPENING =================
         int doorWidthPx = mmToPx(p.clearOpening);
+        int doorHeightPx = mmToPx(p.doorHeight);
+
+        int frame = mmToPx(40);
+
         int doorX = cabinX + (cabinWidthPx - doorWidthPx) / 2;
-        int doorY = cabinY + mmToPx(200);
+        int doorBottom = cabinY + cabinHeightPx;
+        int doorTop = doorBottom - doorHeightPx;
 
-        Paint doorPaint = new Paint();
-        doorPaint.setColor(Color.WHITE);
-        doorPaint.setStyle(Paint.Style.FILL);
 
+// grey frame
+        Paint doorFramePaint = new Paint();
+        doorFramePaint.setColor(Color.LTGRAY);
+        doorFramePaint.setStyle(Paint.Style.FILL);
+
+// outer frame
         canvas.drawRect(
-                doorX,
-                doorY,
-                doorX + doorWidthPx,
-                cabinY + cabinHeightPx,
-                doorPaint
+                doorX - frame,
+                doorTop - frame,
+                doorX + doorWidthPx + frame,
+                doorBottom,
+                doorFramePaint
         );
 
-        // outline
+
+// door opening (white)
+        Paint doorPanelPaint = new Paint();
+        doorPanelPaint.setColor(Color.WHITE);
+        doorPanelPaint.setStyle(Paint.Style.FILL);
+
         canvas.drawRect(
                 doorX,
-                doorY,
+                doorTop,
                 doorX + doorWidthPx,
-                cabinY + cabinHeightPx,
+                doorBottom,
+                doorPanelPaint
+        );
+
+
+// center opening line
+        int center = doorX + doorWidthPx / 2;
+
+        canvas.drawLine(
+                center,
+                doorTop,
+                center,
+                doorBottom,
                 shaftPaint
         );
 
 
+// ================= LOP PANEL =================
+
+        int lopWidth = mmToPx(120);
+        int lopHeight = mmToPx(300);
+        int lopGap = mmToPx(200);
+
+        int lopX = doorX + doorWidthPx + lopGap;
+
+        int lopCenter = doorTop + doorHeightPx / 2;
+
+        int lopTop = lopCenter - lopHeight / 2;
+        int lopBottom = lopCenter + lopHeight / 2;
+
+        Paint lopPaint = new Paint();
+        lopPaint.setColor(Color.DKGRAY);
+        lopPaint.setStyle(Paint.Style.FILL);
+
+        canvas.drawRect(
+                lopX,
+                lopTop,
+                lopX + lopWidth,
+                lopBottom,
+                lopPaint
+        );
 
         // Counterweight dimensions
         int counterWidth = mmToPx(p.counterDbgSize);
