@@ -218,7 +218,6 @@ public class ElevationView extends View {
                 shaftPaint
         );
 
-
 // ================= LOP PANEL =================
 
         int lopWidth = mmToPx(120);
@@ -243,6 +242,7 @@ public class ElevationView extends View {
                 lopBottom,
                 lopPaint
         );
+
 
         // Counterweight dimensions
         int counterWidth = mmToPx(p.counterDbgSize);
