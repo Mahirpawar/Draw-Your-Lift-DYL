@@ -135,8 +135,7 @@ public class PlanView extends View {
             counterH = dbgThickness;
         }
 
-        c.drawRect(counterX,counterY,
-                counterX+counterW,counterY+counterH,counterPaint);
+        drawCounterWeight(c, counterX, counterY, counterW, counterH);
 
         // ================= CABIN =================
 
@@ -424,5 +423,91 @@ public class PlanView extends View {
         c.drawText(t,x+20 - w/2f,(y1+y2)/2f,textPaint);
 
         c.restore();
+    }
+    private void drawCounterWeight(Canvas c, int x, int y, int w, int h){
+
+        Paint outline = new Paint();
+        outline.setColor(Color.DKGRAY);
+        outline.setStyle(Paint.Style.STROKE);
+        outline.setStrokeWidth(4);
+        outline.setAntiAlias(true);
+
+        // vertical counter (LEFT / RIGHT side)
+        if(h > w){
+
+            int neckWidth = (int)(w * 0.55f);
+            int neckOffset = (w - neckWidth) / 2;
+
+            int neckHeight = (int)(h * 0.12f);
+
+            int centerTop = y + neckHeight;
+            int centerBottom = y + h - neckHeight;
+
+            // top neck
+            c.drawRect(
+                    x + neckOffset,
+                    y,
+                    x + neckOffset + neckWidth,
+                    centerTop,
+                    outline
+            );
+
+            // center body
+            c.drawRect(
+                    x,
+                    centerTop,
+                    x + w,
+                    centerBottom,
+                    outline
+            );
+
+            // bottom neck
+            c.drawRect(
+                    x + neckOffset,
+                    centerBottom,
+                    x + neckOffset + neckWidth,
+                    y + h,
+                    outline
+            );
+
+        }
+        // horizontal counter (BACK)
+        else{
+
+            int neckHeight = (int)(h * 0.55f);
+            int neckOffset = (h - neckHeight) / 2;
+
+            int neckWidth = (int)(w * 0.12f);
+
+            int centerLeft = x + neckWidth;
+            int centerRight = x + w - neckWidth;
+
+            // left neck
+            c.drawRect(
+                    x,
+                    y + neckOffset,
+                    centerLeft,
+                    y + neckOffset + neckHeight,
+                    outline
+            );
+
+            // center body
+            c.drawRect(
+                    centerLeft,
+                    y,
+                    centerRight,
+                    y + h,
+                    outline
+            );
+
+            // right neck
+            c.drawRect(
+                    centerRight,
+                    y + neckOffset,
+                    x + w,
+                    y + neckOffset + neckHeight,
+                    outline
+            );
+        }
     }
 }
